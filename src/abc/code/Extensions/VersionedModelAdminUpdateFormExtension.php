@@ -1,4 +1,9 @@
 <?php
+namespace Azt3k\SS\Extensions;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Versioned\Versioned;
 /**
  * VersionedModelAdmin
  * replaces the scaffolded gridfield for versioned objects with a VersionedGridFieldDetailForm

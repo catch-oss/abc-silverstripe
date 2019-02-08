@@ -1,4 +1,8 @@
 <?php
+namespace Azt3k\SS\Classes;
+use Azt3k\SS\Classes\DataObjectHelper;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\ORM\DataObject;
 
 class DataObjectHelper {
 

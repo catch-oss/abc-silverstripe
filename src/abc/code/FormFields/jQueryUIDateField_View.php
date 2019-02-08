@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\FormFields;
 /*
 	Allows you to set all jQuery UI options and events.
 	Usage:

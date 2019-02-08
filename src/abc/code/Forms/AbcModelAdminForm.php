@@ -1,4 +1,6 @@
 <?php
+namespace Azt3k\SS\Forms;
+use Azt3k\SS\Forms\AbcModelAdminForm;
 
 /*
  * To change this template, choose Tools | Templates

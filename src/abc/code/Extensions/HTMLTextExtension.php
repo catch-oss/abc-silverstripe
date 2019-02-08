@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\Extensions;
 
 class HTMLTextExtension extends Extension {
 

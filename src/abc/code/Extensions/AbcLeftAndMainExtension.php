@@ -1,4 +1,6 @@
 <?php
+namespace Azt3k\SS\Extensions;
+use Azt3k\SS\Classes\LeftAndMainHelper;
 
 /**
  * @author AzT3K

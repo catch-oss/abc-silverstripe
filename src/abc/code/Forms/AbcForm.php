@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\Forms;
 
 class AbcForm extends Form {
 

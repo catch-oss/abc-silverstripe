@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\Classes;
 
 class AbcStr{
 

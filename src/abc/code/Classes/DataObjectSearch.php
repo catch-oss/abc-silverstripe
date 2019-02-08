@@ -1,4 +1,8 @@
 <?php
+namespace Azt3k\SS\Classes;
+use SilverStripe\Core\Config\Config;
+use Azt3k\SS\Classes\DataObjectHelper;
+use SilverStripe\ORM\DataObject;
 
 class DataObjectSearch extends Object implements Flushable {
 

@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\Classes;
 /*
 * Database MySQLDump Class File
 * Copyright (c) 2009 by James Elliott

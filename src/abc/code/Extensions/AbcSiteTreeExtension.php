@@ -1,4 +1,6 @@
 <?php
+namespace Azt3k\SS\Extensions;
+use SilverStripe\Control\Director;
 
 /**
  * @author AzT3K

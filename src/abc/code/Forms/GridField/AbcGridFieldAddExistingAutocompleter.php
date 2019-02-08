@@ -1,4 +1,7 @@
 <?php
+namespace Azt3k\SS\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
+use SilverStripe\Forms\GridField\GridField;
 
 class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompleter {
 

@@ -1,4 +1,5 @@
 <?php
+namespace Azt3k\SS\Classes;
 
 /*
  * To change this template, choose Tools | Templates

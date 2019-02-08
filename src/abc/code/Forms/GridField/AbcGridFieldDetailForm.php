@@ -1,4 +1,7 @@
 <?php
+namespace Azt3k\SS\GridField;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridField;
 
 class AbcGridFieldDetailForm extends GridFieldDetailForm {
 	

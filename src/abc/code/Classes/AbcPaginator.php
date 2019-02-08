@@ -1,4 +1,11 @@
 <?php
+namespace Azt3k\SS\Classes;
+use Azt3k\SS\Classes\AbcURL;
+use SilverStripe\View\Requirements;
+use Azt3k\SS\Classes\DataObjectHelper;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\DropdownField;
 
 /**
  * @todo join is broken  - ss3 changed the way it handles joins

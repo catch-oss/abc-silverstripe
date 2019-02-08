@@ -1,4 +1,7 @@
 <?php
+namespace Azt3k\SS\Tasks;
+use SilverStripe\Control\Director;
+use SilverStripe\Dev\BuildTask;
 
 // 0 * * * * php /var/www/vhosts/rowingnz/rowing/project/sapphire/cli-script.php dev/tasks/DBBackup > /var/www/vhosts/rowingnz/rowing/project/logs/DBBuild.log
 

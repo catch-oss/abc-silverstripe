@@ -1,4 +1,6 @@
 <?php
+namespace Azt3k\SS\FormFields;
+use SilverStripe\View\Requirements;
 
 class ColourPickerField extends TextField {
 	

@@ -1,4 +1,10 @@
 <?php
+namespace Azt3k\SS\Forms;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Control\Controller;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
 
 class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
 

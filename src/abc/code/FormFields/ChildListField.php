@@ -1,4 +1,8 @@
 <?php
+namespace Azt3k\SS\FormFields;
+use SilverStripe\View\Requirements;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
 /**
  * This field lets you put an arbitrary piece of HTML into your forms.
  * 

@@ -1,4 +1,8 @@
 <?php
+namespace Azt3k\SS\Classes;
+use SilverStripe\Admin\LeftAndMain;
+use Azt3k\SS\Classes\LeftAndMainHelper;
+use SilverStripe\View\Requirements;
 
 class AbcModule {
 	public static function load($name) {

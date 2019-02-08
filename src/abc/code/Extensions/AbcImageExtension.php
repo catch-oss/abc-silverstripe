@@ -1,4 +1,8 @@
 <?php
+namespace Azt3k\SS\Extensions;
+use SilverStripe\Control\Director;
+use SilverStripe\Assets\Image;
+use SilverStripe\ORM\DataObject;
 
 class AbcImageExtension extends DataExtension {
 
