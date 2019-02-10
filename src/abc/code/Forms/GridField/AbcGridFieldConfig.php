@@ -12,7 +12,6 @@ use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\Forms\GridField\GridFieldSortableHeader;
 use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
-use SilverStripe\Forms\GridField\GridFieldToolbarHeader;
 use Azt3k\SS\GridField\AbcGridFieldConfig_RecordEditor;
 use SilverStripe\Forms\GridField\GridField;
 

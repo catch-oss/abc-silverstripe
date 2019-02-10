@@ -2,11 +2,12 @@
 namespace Azt3k\SS\Tasks;
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
+use Azt3k\SS\Classes\MySQLDump;
 
 // 0 * * * * php /var/www/vhosts/rowingnz/rowing/project/sapphire/cli-script.php dev/tasks/DBBackup > /var/www/vhosts/rowingnz/rowing/project/logs/DBBuild.log
 
 class DBBackup extends BuildTask {
-	
+
 	protected $title		= 'DB Backup';
 	protected $description 	= 'Creates a data dump';
 	protected $enabled 		= true;
@@ -14,14 +15,14 @@ class DBBackup extends BuildTask {
 	/**
 	 * Run the task, and do the business
 	 *
-	 * @param SS_HTTPRequest $httpRequest 
+	 * @param SS_HTTPRequest $httpRequest
 	 */
 	function run($httpRequest) {
 
 		global $databaseConfig;
 
 		// environment type
-		Director::set_environment_type("dev");		
+		Director::set_environment_type("dev");
 
 		// debug
 		ini_set("display_errors","2");
@@ -39,7 +40,7 @@ class DBBackup extends BuildTask {
 
 		passthru("/usr/bin/mysqldump --opt --host=$dbhost --user=$dbuser --password=$dbpwd $dbname > $dumpfile");
 
-		echo "Created: ".$dumpfile; passthru("tail -1 $dumpfile");	
+		echo "Created: ".$dumpfile; passthru("tail -1 $dumpfile");
 		*/
 
 		$drop_table_if_exists 	= false; //Add MySQL 'DROP TABLE IF EXISTS' Statement To Output
@@ -74,8 +75,8 @@ class DBBackup extends BuildTask {
 		if (!is_dir($backupfolder)) mkdir($backupfolder);
 		file_put_contents($dumpfile, $output);
 		echo "Dumped into ".$dumpfile;
-		//echo "<pre>".$output."</pre>";		
+		//echo "<pre>".$output."</pre>";
 
 	}
-	
+
 }
