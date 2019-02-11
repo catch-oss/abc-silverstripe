@@ -79,7 +79,7 @@ class DataObjectHelper {
 		// Find out what is applied to what
 		foreach($dODClasses as $dOD){
 			foreach($dOClasses as $dO){
-				if ( Object::has_extension($dO, $dOD) ) $extMap[$dOD][] = $dO;
+				if (Injector::inst()->has_extension($dO, $dOD) ) $extMap[$dOD][] = $dO;
 			}
 		}
 

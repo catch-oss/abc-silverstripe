@@ -4,7 +4,11 @@ use SilverStripe\Core\Config\Config;
 use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\ORM\DataObject;
 
-class DataObjectSearch extends Object implements Flushable {
+class DataObjectSearch implements Flushable {
+
+    use SilverStripe\Core\Extensible;
+    use SilverStripe\Core\Injector\Injectable;
+    use SilverStripe\Core\Config\Configurable;
 
     /**
      * [flush description]

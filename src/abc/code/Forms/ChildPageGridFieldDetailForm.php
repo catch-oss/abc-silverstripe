@@ -4,7 +4,7 @@ use SilverStripe\ORM\DataQuery;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Versioned\VersionedGridFieldDetailFormClass;
 
 class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
 
@@ -26,12 +26,12 @@ class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
 		if(is_numeric($request->param('ID'))) {
 			$record = $list->byId($request->param("ID"));
 		} else {
-			$record = Object::create($gridField->getModelClass());
+			$record = Injector::inst()->create($gridField->getModelClass());
 		}
 
 		$class = $this->getItemRequestClass();
 
-		$handler = Object::create($class, $gridField, $this, $record, $controller, $this->name, $this->parent);
+		$handler = Injector::inst()->create($class, $gridField, $this, $record, $controller, $this->name, $this->parent);
 		$handler->setTemplate($this->template);
 
 		// if no validator has been set on the GridField and the record has a
@@ -40,7 +40,7 @@ class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
 			$this->setValidator($record->getCMSValidator());
 		}
 
-		return $handler->handleRequest($request, DataModel::inst());
+		return $handler->handleRequest($request);
 	}
 
 }

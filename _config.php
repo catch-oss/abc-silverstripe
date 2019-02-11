@@ -11,4 +11,4 @@ define('ABC_PATH', $dir_name . '/src/abc');
 AbcImageExtension::$fallback_image = ABC_PATH . '/images/no-image.jpg';
 
 // DatePicker config
-Object::useCustomClass('DateField_View_JQuery', 'jQueryUIDateField_View');
+//Object::useCustomClass('DateField_View_JQuery', 'jQueryUIDateField_View');

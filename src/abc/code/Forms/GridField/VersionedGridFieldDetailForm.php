@@ -390,12 +390,12 @@ class VersionedGridFieldDetailForm extends GridFieldDetailForm {
 		if(is_numeric($request->param('ID'))) {
 			$record = $list->byId($request->param("ID"));
 		} else {
-			$record = Object::create($gridField->getModelClass());
+			$record = Injector::inst()->create($gridField->getModelClass());
 		}
 
 		$class = $this->getItemRequestClass();
 
-		$handler = Object::create($class, $gridField, $this, $record, $controller, $this->name);
+		$handler = Injector::inst()->create($class, $gridField, $this, $record, $controller, $this->name);
 		$handler->setTemplate($this->template);
 
 		// if no validator has been set on the GridField and the record has a
@@ -404,7 +404,7 @@ class VersionedGridFieldDetailForm extends GridFieldDetailForm {
 			$this->setValidator($record->getCMSValidator());
 		}
 
-		return $handler->handleRequest($request, DataModel::inst());
+		return $handler->handleRequest($request);
 	}
 
 }
