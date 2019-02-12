@@ -8,7 +8,7 @@ use Azt3k\SS\Classes\MySQLDump;
 
 class DBBackup extends BuildTask {
 
-	protected $title		= 'DB Backup';
+	protected $title		= ' Backup';
 	protected $description 	= 'Creates a data dump';
 	protected $enabled 		= true;
 
