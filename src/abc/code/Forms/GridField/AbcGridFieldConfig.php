@@ -17,6 +17,7 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldComponent;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Forms\GridField\GridFieldConfig;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
 /**
  * Encapsulates a collection of components following the {@link GridFieldComponent} interface.
  * While the {@link GridField} itself has some configuration in the form of setters,
@@ -80,7 +81,7 @@ class AbcGridFieldConfig extends GridFieldConfig{
 	/**
 	 * @param GridFieldComponent One or more components
 	 */
-	public function addComponents() {
+	public function addComponents($component = NULL) {
 		$components = func_get_args();
 		foreach($components as $component) $this->addComponent($component);
 		return $this;
@@ -155,8 +156,8 @@ class AbcGridFieldConfig_Base extends GridFieldConfig_Base {
 	 * @param int $itemsPerPage - How many items per page should show up per page
 	 * @return GridFieldConfig_Base
 	 */
-	public static function create($itemsPerPage=null){
-		return new self($itemsPerPage);
+	public static function create(...$args){
+		return new self($args);
 	}
 
 	/**
