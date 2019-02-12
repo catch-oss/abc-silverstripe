@@ -18,6 +18,11 @@ use SilverStripe\Forms\GridField\GridFieldComponent;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Forms\GridField\GridFieldConfig;
 use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordViewer;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use Azt3k\SS\GridField\AbcGridFieldDetailForm;
+
+
 /**
  * Encapsulates a collection of components following the {@link GridFieldComponent} interface.
  * While the {@link GridField} itself has some configuration in the form of setters,
@@ -38,8 +43,8 @@ class AbcGridFieldConfig extends GridFieldConfig{
 	 *
 	 * @return GridFieldConfig
 	 */
-	public static function create(){
-		return new self;
+	public static function create(...$args){
+		return new self($args);
 	}
 
 	/**
@@ -201,8 +206,8 @@ class AbcGridFieldConfig_RecordEditor extends GridFieldConfig_RecordEditor {
 	 * @param int $itemsPerPage - How many items per page should show up
 	 * @return GridFieldConfig_RecordEditor
 	 */
-	public static function create($itemsPerPage=null){
-		return new self($itemsPerPage);
+	public static function create(...$args){
+		return new self($args);
 	}
 
 	/**
@@ -250,8 +255,8 @@ class AbcGridFieldConfig_RelationEditor extends GridFieldConfig_RelationEditor {
 	 * @param int $itemsPerPage - How many items per page should show up
 	 * @return GridFieldConfig_RelationEditor
 	 */
-	public static function create($itemsPerPage=null){
-		return new self($itemsPerPage);
+	public static function create(...$args){
+		return new self($args);
 	}
 
 	/**
