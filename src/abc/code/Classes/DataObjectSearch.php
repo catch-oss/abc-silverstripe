@@ -3,6 +3,12 @@ namespace Azt3k\SS\Classes;
 use SilverStripe\Core\Config\Config;
 use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Flushable;
+use Psr\SimpleCache\CacheInterface;
+use Azt3k\SS\Classes\AbcDB;
+use SilverStripe\Core\Convert;
 
 class DataObjectSearch implements Flushable {
 
@@ -15,7 +21,8 @@ class DataObjectSearch implements Flushable {
      * @return [type] [description]
      */
     public static function flush() {
-        SS_Cache::factory('DataObjectSearch')->clean(Zend_Cache::CLEANING_MODE_ALL);
+        //SS_Cache::factory('DataObjectSearch')->clean(Zend_Cache::CLEANING_MODE_ALL);
+        $cache->clear();
     }
 
     /**
@@ -132,20 +139,25 @@ class DataObjectSearch implements Flushable {
      * @param  array  $fields [description]
      * @return [type]         [description]
      */
+
     public static function weighted_search($className, $q, array $fields = array('Content' => 1,'Title' => 3), $start = 0, $limit = 10, $filterSql = null, $filterUnionSql = null) {
 
         // sort out the cache
         $implodedArgs = $className . '_' . $q . '_' . implode('_', $fields) . '_' . $start . '_' . $limit  . '_' . $filterSql;
         $cachekey = preg_replace("/[^A-Za-z0-9]/", '_', __FUNCTION__ . "_" . $implodedArgs);
-        $cache = SS_Cache::Factory(
-            'DataObjectSearch',
-            'Output',
-            array(
-                'lifetime' => static::get_cache_time(),
-                'automatic_serialization' => true
-            )
-        );
-        $set = $cache->load($cachekey);
+        // $cache = SS_Cache::Factory(
+        //     'DataObjectSearch',
+        //     'Output',
+        //     array(
+        //         'lifetime' => static::get_cache_time(),
+        //         'automatic_serialization' => true
+        //     )
+        // );
+        // $set = $cache->load($cachekey);
+
+
+        $cache = Injector::inst()->get(CacheInterface::class . '.DataObjectSearch');
+        $set = $cache->get($cachekey);
 
         // dont hit the db if we don't need to
         if (!$set) {
@@ -155,6 +167,7 @@ class DataObjectSearch implements Flushable {
             $terms = array_merge(static::str_to_terms($q), static::str_to_fragments($q));
             $terms[] = $q;
             $terms = array_unique($terms);
+
 
             // Set some vars
             $set = new ArrayList;
@@ -271,8 +284,7 @@ class DataObjectSearch implements Flushable {
                 }
             }
 
-            // cache
-            $cache->save($set, $cachekey);
+            $cache->set($cachekey, $set);
         }
 
         return $set;

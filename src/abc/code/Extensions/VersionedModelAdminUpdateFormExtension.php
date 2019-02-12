@@ -4,7 +4,8 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldDeleteAction;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Versioned\VersionedGridFieldDetailForm;
+use Azt3k\SS\GridField\VersionedGridFieldDetailForm;
+use SilverStripe\Core\Extension;
 /**
  * VersionedModelAdmin
  * replaces the scaffolded gridfield for versioned objects with a VersionedGridFieldDetailForm
@@ -33,6 +34,7 @@ class VersionedModelAdminUpdateFormExtension extends Extension {
 				}
 			}
 		}
-	}
+	}use Azt3k\SS\GridField\VersionedGridFieldDetailForm;
+use Azt3k\SS\GridField\VersionedGridFieldDetailForm_ItemRequest;
 
 }

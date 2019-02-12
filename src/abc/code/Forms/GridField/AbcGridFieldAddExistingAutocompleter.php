@@ -2,7 +2,8 @@
 namespace Azt3k\SS\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridField;
-
+use SilverStripe\Core\Convert;
+use SilverStripe\View\SSViewer;
 class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompleter {
 
 	/**

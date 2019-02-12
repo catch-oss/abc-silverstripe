@@ -1,6 +1,7 @@
 <?php
 namespace Azt3k\SS\Extensions;
 use SilverStripe\Control\Director;
+use SilverStripe\ORM\DataExtension;
 
 /**
  * @author AzT3K

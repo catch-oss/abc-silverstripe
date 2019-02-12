@@ -3,6 +3,10 @@ namespace Azt3k\SS\Extensions;
 use SilverStripe\Control\Director;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\ORM\DataExtension;
 
 class AbcImageExtension extends DataExtension {
 

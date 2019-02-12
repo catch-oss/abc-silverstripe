@@ -22,7 +22,8 @@
         "silverstripe/framework"                : "4.3.0@stable",
         "silverstripe/cms"                      : "4.3.0@stable",
         "silverstripe/crontask"                 : "^2.1",
-        "micschk/silverstripe-excludechildren"  : "dev-master"
+        "micschk/silverstripe-excludechildren"  : "dev-master",
+        "psr/simple-cache": "^1.0@dev"
     },
     "autoload": {
         "psr-4": {

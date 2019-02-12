@@ -1,6 +1,5 @@
 <?php
 namespace Azt3k\SS\Classes;
-use Azt3k\SS\Classes\AbcURL;
 
 class AbcURL{
 

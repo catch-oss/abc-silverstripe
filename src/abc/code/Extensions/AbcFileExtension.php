@@ -1,6 +1,8 @@
 <?php
 namespace Azt3k\SS\Extensions;
 
+use SilverStripe\ORM\DataExtension;
+
 class AbcFileExtension extends DataExtension {
 
 	// this doesn't even work

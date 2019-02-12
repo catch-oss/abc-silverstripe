@@ -4,8 +4,9 @@ use SilverStripe\ORM\DataQuery;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\Versioned\VersionedGridFieldDetailFormClass;
-
+use SilverStripe\Core\Injector\Injector;
+use Azt3k\SS\GridField\VersionedGridFieldDetailForm;
+use Azt3k\SS\GridField\VersionedGridFieldDetailForm_ItemRequest;
 class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
 
     protected $parent;

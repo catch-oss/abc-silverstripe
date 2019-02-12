@@ -2,9 +2,10 @@
 namespace Azt3k\SS\GridField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 
 class AbcGridFieldDetailForm extends GridFieldDetailForm {
-	
+
 }
 
 class AbcGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest {

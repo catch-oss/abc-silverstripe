@@ -1,5 +1,5 @@
 <?php
-
+use Azt3k\SS\Extensions\AbcImageExtension;
 // Define path constant
 $path = str_replace('\\', '/', __DIR__);
 $path_fragments = explode('/', $path);

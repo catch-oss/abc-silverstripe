@@ -9,6 +9,7 @@ use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 
 /**
  * AddModelAdmin is an extension of ModelAdmin designed to allow some customisation to the edit form etc.

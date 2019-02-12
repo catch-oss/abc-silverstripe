@@ -1,4 +1,6 @@
 <?php
+use SilverStripe\Dev\SapphireTest;
+
 class ABCSilverStripeTest extends SapphireTest
 {
 

@@ -11,6 +11,13 @@ use SilverStripe\Security\Security;
 use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Convert;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\Forms\CompositeField;
+
 /**
  * VersionedGridFieldDetailForm & VersionedGridFieldDetailForm_ItemRequest
  * Allows managing versioned objects through gridfield.

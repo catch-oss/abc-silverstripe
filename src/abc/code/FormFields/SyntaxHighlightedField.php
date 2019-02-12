@@ -1,8 +1,9 @@
 <?php
 namespace Azt3k\SS\FormFields;
 use SilverStripe\View\Requirements;
-class SyntaxHighlightedField extends TextAreaField {
-	
+use SilverStripe\Forms\TextareaField;
+class SyntaxHighlightedField extends TextareaField {
+
 	/**
 	 * @var string $content
 	 */
@@ -13,7 +14,7 @@ class SyntaxHighlightedField extends TextAreaField {
 		// Requirements
 		Requirements::javascript(ABC_VENDOR_PATH . '/codemirror/lib/codemirror.js');
 		Requirements::css(ABC_VENDOR_PATH . '/codemirror/lib/codemirror.css');
-		Requirements::javascript(ABC_VENDOR_PATH . '/codemirror/mode/'.$type.'/'.$type.'.js');		
+		Requirements::javascript(ABC_VENDOR_PATH . '/codemirror/mode/'.$type.'/'.$type.'.js');
 		Requirements::javascript(ABC_PATH . '/javascript/SyntaxHighlightedField.js');
 
 		// classes

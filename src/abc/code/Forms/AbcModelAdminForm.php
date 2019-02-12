@@ -1,6 +1,7 @@
 <?php
 namespace Azt3k\SS\Forms;
-use Azt3k\SS\Forms\AbcModelAdminForm;
+
+use SilverStripe\Forms\Form;
 
 /*
  * To change this template, choose Tools | Templates
@@ -13,5 +14,5 @@ use Azt3k\SS\Forms\AbcModelAdminForm;
  * @author AzT3k
  */
 class AbcModelAdminForm extends Form{
-	
+
 }

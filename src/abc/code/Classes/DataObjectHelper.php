@@ -1,8 +1,13 @@
 <?php
 namespace Azt3k\SS\Classes;
-use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
+use \Exception;
+use \ReflectionClass;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Extension;
 
 class DataObjectHelper {
 
@@ -328,7 +333,7 @@ class DataObjectHelper {
 	/*
 	 *	DataObjectSet to Array
 	 */
-	public static function DOS2Array(DataObjectSet $dos, $depth = 1, $exclude = array(), $include = array(), $currentDepth = 0){
+	public static function DOS2Array($dos, $depth = 1, $exclude = array(), $include = array(), $currentDepth = 0){
 
 		$out = array();
 
@@ -352,7 +357,7 @@ class DataObjectHelper {
 	/*
 	 *	DataObjectSet to JSON
 	 */
-	public static function DOS2JSON(DataObjectSet $dos, $depth = 1, $exclude = array(), $include = array(), $currentDepth = 0){
+	public static function DOS2JSON($dos, $depth = 1, $exclude = array(), $include = array(), $currentDepth = 0){
 
 		return json_encode(self::DOS2Array($dos, $depth, $exclude, $include, $currentDepth));
 

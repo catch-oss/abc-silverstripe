@@ -1,6 +1,8 @@
 <?php
 namespace Azt3k\SS\Extensions;
 
+use SilverStripe\Core\Extension;
+use \DOMDocument;
 class HTMLTextExtension extends Extension {
 
 	public function FirstBlock() {

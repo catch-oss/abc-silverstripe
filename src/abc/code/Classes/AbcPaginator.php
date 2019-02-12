@@ -6,6 +6,10 @@ use Azt3k\SS\Classes\DataObjectHelper;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\View\ViewableData;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\DataList;
 
 /**
  * @todo join is broken  - ss3 changed the way it handles joins
