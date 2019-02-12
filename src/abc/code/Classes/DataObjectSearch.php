@@ -9,6 +9,9 @@ use SilverStripe\Core\Flushable;
 use Psr\SimpleCache\CacheInterface;
 use Azt3k\SS\Classes\AbcDB;
 use SilverStripe\Core\Convert;
+use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Core\Config\Configurable;
 
 class DataObjectSearch implements Flushable {
 
