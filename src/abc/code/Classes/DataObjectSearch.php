@@ -23,6 +23,7 @@ class DataObjectSearch implements Flushable {
      */
     public static function flush() {
         //SS_Cache::factory('DataObjectSearch')->clean(Zend_Cache::CLEANING_MODE_ALL);
+        $cache = Injector::inst()->get(CacheInterface::class . '.DataObjectSearch');
         $cache->clear();
     }
 
