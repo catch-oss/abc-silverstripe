@@ -15,9 +15,7 @@ use SilverStripe\Core\Config\Configurable;
 
 class DataObjectSearch implements Flushable {
 
-    use SilverStripe\Core\Extensible;
-    use SilverStripe\Core\Injector\Injectable;
-    use SilverStripe\Core\Config\Configurable;
+    use Extensible,Injectable, Configurable;
 
     /**
      * [flush description]
