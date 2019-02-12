@@ -13,21 +13,21 @@ use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 
 /**
  * AddModelAdmin is an extension of ModelAdmin designed to allow some customisation to the edit form etc.
- * 
+ *
  * @author AzT3k
  */
 class AbcModelAdmin extends ModelAdmin {
-	
+
 	/**
 	 * This method generates the list view form
 	 * Individual items are handled by the gridfielddetailform - this is is defined in GridFieldDetailForm_ItemRequest::ItemEditForm() and has been overloaded in the subclass
-	 * 
+	 *
 	 * @param type $id
 	 * @param type $fields
 	 * @return \AbcModelAdminForm
 	 */
 	function getEditForm($id = null, $fields = null) {
-				
+
 		$list = $this->getList();
 		$exportButton = new GridFieldExportButton('before');
 		$exportButton->setExportColumns($this->getExportFields());
@@ -59,8 +59,8 @@ class AbcModelAdmin extends ModelAdmin {
 		$form->setAttribute('data-pjax-fragment', 'CurrentForm');
 
 		$this->extend('updateEditForm', $form);
-		
+
 		return $form;
 	}
-	
+
 }

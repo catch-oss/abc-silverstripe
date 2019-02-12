@@ -34,7 +34,6 @@ class VersionedModelAdminUpdateFormExtension extends Extension {
 				}
 			}
 		}
-	}use Azt3k\SS\GridField\VersionedGridFieldDetailForm;
-use Azt3k\SS\GridField\VersionedGridFieldDetailForm_ItemRequest;
+	}
 
 }
