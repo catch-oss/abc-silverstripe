@@ -16,7 +16,7 @@ use SilverStripe\Core\Extension;
 class VersionedModelAdminUpdateFormExtension extends Extension {
 
 	function onBeforeInit() {
-		Versioned::reading_stage('Stage');
+		Versioned::set_stage('Stage');
 	}
 
 	function updateEditForm($form) {

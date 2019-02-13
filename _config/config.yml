@@ -8,6 +8,7 @@ SilverStripe\Assets\File:
   extensions:
     - Azt3k\SS\Extensions\AbcFileExtension
 SilverStripe\Admin\LeftAndMain:
+  url_segment: process-requirements
   extensions:
     - Azt3k\SS\Extensions\AbcLeftAndMainExtension
 SilverStripe\CMS\Model\SiteTree:

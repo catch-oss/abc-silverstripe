@@ -8,7 +8,7 @@ use SilverStripe\Admin\LeftAndMainExtension;
  */
 class AbcLeftAndMainExtension extends LeftAndMainExtension {
 
-	private static $url_segment = 'process-requirements';
+    private static $url_segment = 'process-requirements';
 
 	public function onAfterInit() {
 		LeftAndMainHelper::process_requirements();
