@@ -12,7 +12,7 @@ class AbcSiteTreeExtension extends DataExtension {
         'Title' => true,
         'Content'  => array(
             'type' => 'fulltext',
-            'value' => '"Content"'
+            'value' => ["Content"]
         )
     );
 

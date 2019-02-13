@@ -1,6 +1,6 @@
 SilverStripe\Admin\ModelAdmin:
   extensions:
-    - VersionedModelAdminUpdateFormExtension
+    - Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
 SilverStripe\Assets\Image:
   extensions:
     - Azt3k\SS\Extensions\AbcImageExtension
