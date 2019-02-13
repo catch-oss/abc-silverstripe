@@ -1,24 +1,24 @@
-ModelAdmin:
+SilverStripe\Admin\ModelAdmin:
   extensions:
-    - VersionedModelAdminUpdateFormExtension
-Image:
+    - Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
+SilverStripe\Assets\Image:
   extensions:
-    - AbcImageExtension
-File:
+    - Azt3k\SS\Extensions\AbcImageExtension
+SilverStripe\Assets\File:
   extensions:
-    - AbcFileExtension
-LeftAndMain:
+    - Azt3k\SS\Extensions\AbcFileExtension
+SilverStripe\Admin\LeftAndMain:
   extensions:
-    - AbcLeftAndMainExtension
-SiteTree:
+    - Azt3k\SS\Extensions\AbcLeftAndMainExtension
+SilverStripe\CMS\Model\SiteTree:
   extensions:
-    - AbcSiteTreeExtension
-Security:
+    - Azt3k\SS\Extensions\AbcSiteTreeExtension
+SilverStripe\Security\Security:
   extensions:
-    - AbcSecurityExtension
-Controller:
+    - Azt3k\SS\Extensions\AbcSecurityExtension
+SilverStripe\Control\Controller:
   extensions:
-    - AbcControllerExtension
-HTMLText:
-  extensions:
-    - HTMLTextExtension
+    - Azt3k\SS\Extensions\AbcControllerExtension
+# HTMLText:
+#   extensions:
+#     - HTMLTextExtension
