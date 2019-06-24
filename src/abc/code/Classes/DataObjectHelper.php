@@ -26,12 +26,15 @@ class DataObjectHelper {
 
 	public static function versioned_table($className) {
 
+		$schema = DataObject::getSchema();
+		$table = $schema->tableName($className);
+
 		$stagedRes = (
-			singleton($className)->hasExtension('Versioned') &&
-			strtolower(Versioned::current_stage()) != 'stage'
+			singleton($className)->hasExtension(Versioned::class) &&
+			strtolower(Versioned::get_stage()) != 'stage'
 		)
-			? $className . '_' . ucfirst(strtolower(Versioned::current_stage()))
-			: $className;
+			? $table . '_' . ucfirst(strtolower(Versioned::get_stage()))
+			: $table;
 
 		return $stagedRes;
 	}
