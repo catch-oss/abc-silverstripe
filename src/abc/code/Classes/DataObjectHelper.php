@@ -7,6 +7,7 @@ use \ReflectionClass;
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Convert;
+use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Extension;
 
 class DataObjectHelper {
@@ -58,36 +59,20 @@ class DataObjectHelper {
 
 		// get a list of classes
 		$classes = array_unique(array_merge(array_keys(ClassInfo::allClasses()), get_declared_classes()));
-		// die(print_r($classes,1));
-
-		// Silverstripe has broken clases floating around, we need to blacklist them or it's bad times
-		$blacklist = array(
-			'SapphireTestReporter',
-			'SapphireTest',
-			'SapphireTestSuite',
-			'CliTestReporter',
-			'SilverStripeListener',
-			'TeamCityListener',
-			'SS_TestListener'
-		);
-		$blacklistLC = array_map('strtolower', $blacklist);
 
 		// init some vars
 		$extMap = $dOClasses = $dODClasses = array();
 
 		// Sort Classes
 		foreach($classes as $class){
-			if (!in_array(strtolower($class), $blacklistLC) ) {
-				// this breaks when we start looking at some of the broken requires in SapphireTest
-				if ( is_subclass_of($class, 'DataObject') ) $dOClasses[] = $class;
-				if ( is_subclass_of($class, 'Extension') ) $dODClasses[] = $class;
-			}
+            if ( is_subclass_of($class, DataObject::class) ) $dOClasses[] = $class;
+            if ( is_subclass_of($class, Extension::class) ) $dODClasses[] = $class;
 		}
 
 		// Find out what is applied to what
 		foreach($dODClasses as $dOD){
 			foreach($dOClasses as $dO){
-				if (Injector::inst()->has_extension($dO, $dOD) ) $extMap[$dOD][] = $dO;
+				if (Extensible::has_extension($dO, $dOD)) $extMap[$dOD][] = $dO;
 			}
 		}
 
