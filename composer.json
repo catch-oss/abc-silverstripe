@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/catch/silverstripe-excludechildren"
+            "url": "git@gl.catchdesign.co.nz:catch/silverstripe-excludechildren.git"
         }
     ],
     "minimum-stability": "dev",
