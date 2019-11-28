@@ -12,7 +12,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/zenril/silverstripe-excludechildren"
+            "url": "https://github.com/catch/silverstripe-excludechildren"
         }
     ],
     "minimum-stability": "dev",
