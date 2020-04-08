@@ -17,7 +17,7 @@ class NewsHolderPage extends Page {
         'ExcludeChildren',
     );
 
-    private static $excluded_children = array(
+    private static $hide_from_cms_tree = array(
         'NewsPage'
     );
 

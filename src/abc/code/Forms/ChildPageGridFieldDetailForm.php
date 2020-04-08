@@ -17,7 +17,7 @@ class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm {
     }
 
     public function handleItem($gridField, $request) {
-		$controller = $gridField->getForm()->Controller();
+		$controller = $gridField->getForm()->getController();
 
 		//resetting datalist on gridfield to ensure edited object is in list
 		//this was causing errors when the modified object was no longer in the results
