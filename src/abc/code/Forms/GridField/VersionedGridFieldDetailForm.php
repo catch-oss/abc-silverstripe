@@ -10,6 +10,7 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
@@ -118,7 +119,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
     public function getCMSActions()
     {
         $record = $this->record;
-        $classname = $record->class;
+        $classname = $record->ClassName;
 
         $minorActions = CompositeField::create()->setTag('fieldset')->addExtraClass('ss-ui-buttonset');
         $actions = new FieldList($minorActions);
@@ -313,11 +314,11 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
         if (!Versioned::get_by_stage($this->baseTable(), 'Stage')->byID($record->ID)) {
             $conn = DB::getConn();
             if (method_exists($conn, 'allowPrimaryKeyEditing')) {
-                $conn->allowPrimaryKeyEditing($record->class, true);
+                $conn->allowPrimaryKeyEditing($record->ClassName, true);
             }
             DB::query("INSERT INTO \"{$this->baseTable()}\" (\"ID\") VALUES ({$this->ID})");
             if (method_exists($conn, 'allowPrimaryKeyEditing')) {
-                $conn->allowPrimaryKeyEditing($record->class, false);
+                $conn->allowPrimaryKeyEditing($record->ClassName, false);
             }
         }
 
@@ -326,7 +327,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
         $record->forceChange();
         $record->write();
 
-        $result = DataObject::get_by_id($this->class, $this->ID);
+        $result = DataObject::get_by_id($this->ClassName, $this->ID);
 
         Versioned::reading_stage($oldStage);
 
@@ -355,7 +356,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             return false;
         }
 
-        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->class, 'Stage', $this->record->ID);
+        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Stage', $this->record->ID);
 
         // Return true for both completely deleted pages and for pages just deleted from stage.
         return !($stageVersion);
@@ -366,7 +367,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
      */
     public function getExistsOnLive()
     {
-        return (bool) Versioned::get_versionnumber_by_stage($this->record->class, 'Live', $this->record->ID);
+        return (bool) Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Live', $this->record->ID);
     }
 
     /**
@@ -383,8 +384,8 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             return false;
         }
 
-        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->class, 'Stage', $this->record->ID);
-        $liveVersion = Versioned::get_versionnumber_by_stage($this->record->class, 'Live', $this->record->ID);
+        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Stage', $this->record->ID);
+        $liveVersion = Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Live', $this->record->ID);
 
         return $stageVersion && $stageVersion != $liveVersion;
     }
@@ -403,8 +404,8 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             return false;
         }
 
-        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->class, 'Stage', $this->record->ID);
-        $liveVersion = Versioned::get_versionnumber_by_stage($this->record->class, 'Live', $this->record->ID);
+        $stageVersion = Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Stage', $this->record->ID);
+        $liveVersion = Versioned::get_versionnumber_by_stage($this->record->ClassName, 'Live', $this->record->ID);
 
         return $stageVersion && !$liveVersion;
     }
