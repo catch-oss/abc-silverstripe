@@ -3,69 +3,79 @@ namespace Azt3k\SS\Extensions;
 
 use SilverStripe\Core\Extension;
 use \DOMDocument;
-class HTMLTextExtension extends Extension {
 
-	public function FirstBlock() {
-		return $this->owner->FirstBlocks(1);
-	}
+class HTMLTextExtension extends Extension
+{
+    public function FirstBlock()
+    {
+        return $this->owner->FirstBlocks(1);
+    }
 
-	public function FirstBlocks($num = 2) {
+    public function FirstBlocks($num = 2)
+    {
 
-		// get the Content safely
-		$content = @$this->owner->__toString();
+        // get the Content safely
+        $content = @$this->owner->forTemplate();
 
-		// return nothing if we have nothing
-		if (!$content) return '';
+        // die(print_r($content));
 
-		// append thestuff dom doc adds incorrectly
-		$content = '<!doctype html><html><body>' . $content . '</body></html>';
+        // return nothing if we have nothing
+        if (!$content) {
+            return '';
+        }
 
-		// load it into dom doc
-		$dom = new DOMDocument;
-		@$dom->loadHTML($content);
+        // append thestuff dom doc adds incorrectly
+        $content = '<!doctype html><html><body>' . $content . '</body></html>';
 
-		// find the body fragment
-		$body = $dom->getElementsByTagName('body')->item(0);
+        // load it into dom doc
+        $dom = new DOMDocument;
+        @$dom->loadHTML($content);
 
-		// init the output string
-		$out = new DOMDocument();
-		$out->loadHTML('<!doctype html><html><body></body></html>');
-		$oBody = $out->getElementsByTagName('body')->item(0);
+        // find the body fragment
+        $body = $dom->getElementsByTagName('body')->item(0);
 
-		// loop through nodes appending children to the output
-		$i = 0;
-		foreach ($body->childNodes as $node) {
+        // init the output string
+        $out = new DOMDocument();
+        $out->loadHTML('<!doctype html><html><body></body></html>');
+        $oBody = $out->getElementsByTagName('body')->item(0);
 
-			// skip text nodes
-			if ($node->nodeName == '#text') continue;
+        // loop through nodes appending children to the output
+        $i = 0;
+        foreach ($body->childNodes as $node) {
 
-			// exit the loop if we have what we need
-			if ($i>=$num) break;
+            // skip text nodes
+            if ($node->nodeName == '#text') {
+                continue;
+            }
 
-			// append the node
-			$oBody->appendChild($out->importNode($node, true));
+            // exit the loop if we have what we need
+            if ($i>=$num) {
+                break;
+            }
 
-			// increment node count
-			$i++;
-		}
+            // append the node
+            $oBody->appendChild($out->importNode($node, true));
 
-		// cleanup output
-		$htmlFragment = preg_replace(
-			'/^<!DOCTYPE.+?>/',
-			'',
-			str_replace(
-				array(
-					'<html>',
-					'</html>',
-					'<body>',
-					'</body>'
-				),
-				array('', '', '', '')
-				,
-				$out->saveHTML()
-			)
-		);
+            // increment node count
+            $i++;
+        }
 
-		return $htmlFragment;
-	}
+        // cleanup output
+        $htmlFragment = preg_replace(
+            '/^<!DOCTYPE.+?>/',
+            '',
+            str_replace(
+                array(
+                    '<html>',
+                    '</html>',
+                    '<body>',
+                    '</body>'
+                ),
+                array('', '', '', ''),
+                $out->saveHTML()
+            )
+        );
+
+        return new \SilverStripe\ORM\FieldType\DBHTMLText($htmlFragment);
+    }
 }

@@ -20,6 +20,6 @@ SilverStripe\Security\Security:
 SilverStripe\Control\Controller:
   extensions:
     - Azt3k\SS\Extensions\AbcControllerExtension
-# HTMLText:
-#   extensions:
-#     - HTMLTextExtension
+SilverStripe\ORM\FieldType\DBHTMLText:
+  extensions:
+    - Azt3k\SS\Extensions\HTMLTextExtension
