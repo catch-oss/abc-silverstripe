@@ -76,6 +76,10 @@ class HTMLTextExtension extends Extension
             )
         );
 
-        return new \SilverStripe\ORM\FieldType\DBHTMLText($htmlFragment);
+        // die($htmlFragment);
+
+        $field = clone $this->owner;
+        $field->setValue($htmlFragment);
+        return $field;
     }
 }
