@@ -1,7 +1,5 @@
 <?php
 namespace Azt3k\SS\Admin;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
 use Azt3k\SS\Forms\AbcModelAdminForm;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridFieldPrintButton;
@@ -9,7 +7,7 @@ use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 
 /**
  * AddModelAdmin is an extension of ModelAdmin designed to allow some customisation to the edit form etc.
@@ -35,7 +33,7 @@ class AbcModelAdmin extends ModelAdmin {
 			$this->sanitiseClassName($this->modelClass),
 			false,
 			$list,
-			$fieldConfig = AddGridFieldConfig_RecordEditor::create($this->stat('page_length'))
+			$fieldConfig = GridFieldConfig_RecordEditor::create($this->stat('page_length'))
 				->addComponent($exportButton)
 				->removeComponentsByType('GridFieldFilterHeader')
 				->addComponents(new GridFieldPrintButton('before'))
