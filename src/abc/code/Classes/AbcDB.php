@@ -1,6 +1,5 @@
 <?php
 namespace Azt3k\SS\Classes;
-use SilverStripe\Core\Config\Config;
 use \PDO;
 
 class AbcDB extends PDO{

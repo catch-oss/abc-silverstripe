@@ -16,7 +16,9 @@ class AbcModule {
 				Requirements::javascript(ABC_PATH."/javascript/library/jQuery/jquery-1.10.2.min.js");
 				LeftAndMainHelper::require_unblock(THIRDPARTY_DIR."/jquery/jquery.js");
 				LeftAndMainHelper::require_block(ABC_PATH."/javascript/library/jQuery/jquery-1.10.2.min.js");
-				LeftAndMain::require_javascript(THIRDPARTY_DIR."/jquery/jquery.js");
+				// @todo: this call was here pre ss4, that function is no longer there.
+				// but what is all this stuff doing, loading jquery, does the above not do that?
+				// LeftAndMain::require_javascript(THIRDPARTY_DIR."/jquery/jquery.js");
 				break;
 
 			case 'jquery-mobile':
