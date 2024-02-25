@@ -15,8 +15,11 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\ValidationException;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 
@@ -173,13 +176,15 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             //Ensure Link method is defined & non-null before allowing preview
             if (method_exists($this->record, 'Link') && $this->record->Link()) {
                 $actions->push(
-                LiteralField::create('preview',
-                    sprintf('<a href="%s" class="ss-ui-button" data-icon="preview" target="_blank">%s &raquo;</a>',
-                        $this->record->Link() . '?stage=Stage',
-                        _t('LeftAndMain.PreviewButton', 'Preview')
+                    LiteralField::create(
+                        'preview',
+                        sprintf(
+                            '<a href="%s" class="ss-ui-button" data-icon="preview" target="_blank">%s &raquo;</a>',
+                            $this->record->Link() . '?stage=Stage',
+                            _t('LeftAndMain.PreviewButton', 'Preview')
+                        )
                     )
-                )
-            );
+                );
             }
         }
 
@@ -229,7 +234,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
         return $this->edit(Controller::curr()->getRequest());
     }
 
-    public function doUnpublish($data, $form)
+    public function doUnpublish($data = null, $form = null)
     {
         $record = $this->record;
 
@@ -237,9 +242,9 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             return Security::permissionFailure($this);
         }
 
-        $origStage = Versioned::current_stage();
-        Versioned::reading_stage('Live');
+        $origStage = Versioned::get_reading_mode();
 
+        Versioned::set_reading_mode('Live');
         // This way our ID won't be unset
         $clone = clone $record;
         $clone->delete();
@@ -248,7 +253,11 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             $this->record->singular_name(),
             '"' . Convert::raw2xml($this->record->Title) . '"'
         );
-        $form->sessionMessage($message, 'good');
+        if ($form) {
+            $form->sessionMessage($message, 'good');
+        }
+
+        Versioned::set_reading_mode($origStage);
 
         return $this->edit(Controller::curr()->getRequest());
     }
@@ -276,7 +285,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
                 throw new ValidationException(_t('GridFieldDetailForm.DeletePermissionsFailure', 'No delete permissions'), 0);
             }
         } catch (ValidationException $e) {
-            $form->sessionMessage($e->getResult()->message(), 'bad');
+            $form->sessionMessage(implode(', ', $e->getResult()->getMessages()), 'bad');
 
             return Controller::curr()->redirectBack();
         }
@@ -312,7 +321,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
         // if no record can be found on draft stage (meaning it has been "deleted from draft" before),
         // create an empty record
         if (!Versioned::get_by_stage($this->baseTable(), 'Stage')->byID($record->ID)) {
-            $conn = DB::getConn();
+            $conn = DB::get_conn();
             if (method_exists($conn, 'allowPrimaryKeyEditing')) {
                 $conn->allowPrimaryKeyEditing($record->ClassName, true);
             }
@@ -322,14 +331,14 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
             }
         }
 
-        $oldStage = Versioned::current_stage();
-        Versioned::reading_stage('Stage');
+        $oldStage = Versioned::get_stage();
+        Versioned::set_stage('Stage');
         $record->forceChange();
         $record->write();
 
         $result = DataObject::get_by_id($this->ClassName, $this->ID);
 
-        Versioned::reading_stage($oldStage);
+        Versioned::set_stage($oldStage);
 
         return $result;
     }
@@ -420,14 +429,15 @@ class VersionedGridFieldDetailForm extends GridFieldDetailForm
         //resetting datalist on gridfield to ensure edited object is in list
         //this was causing errors when the modified object was no longer in the results
         $list = $gridField->getList();
-        $list = $list->setDataQuery(new DataQuery($list->dataClass()));
+        if ($list instanceof DataList) {
+            $list = $list->setDataQuery(new DataQuery($list->dataClass()));
 
-        if (is_numeric($request->param('ID'))) {
-            $record = $list->byId($request->param('ID'));
-        } else {
-            $record = Injector::inst()->create($gridField->getModelClass());
+            if (is_numeric($request->param('ID'))) {
+                $record = $list->byId($request->param('ID'));
+            } else {
+                $record = Injector::inst()->create($gridField->getModelClass());
+            }
         }
-
         $class = $this->getItemRequestClass();
 
         $handler = Injector::inst()->create($class, $gridField, $this, $record, $controller, $this->name);

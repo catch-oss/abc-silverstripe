@@ -1,8 +1,11 @@
 <?php
 namespace Azt3k\SS\GridField;
+
+use LogicException;
 use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Core\Convert;
+use SilverStripe\ORM\DataList;
 use SilverStripe\View\SSViewer;
 class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompleter {
 
@@ -36,7 +39,7 @@ class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompl
 		foreach($results as $result) {
 			$json[$result->ID] = SSViewer::fromString($this->resultsFormat)->process($result);
 		}
-		return Convert::array2json($json);
+		return json_encode($json); 
 	}
 
 }

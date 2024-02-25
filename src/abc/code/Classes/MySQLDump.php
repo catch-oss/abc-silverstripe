@@ -6,7 +6,6 @@ namespace Azt3k\SS\Classes;
 * James.d.Elliott@gmail.com
 * GNU General Public License v3 http://www.gnu.org/licenses/gpl.html
 */
-
 $version1 = '1.3.2'; //This Scripts Version.
 
 class MySQLDump {
