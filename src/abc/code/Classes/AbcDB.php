@@ -6,7 +6,7 @@ class AbcDB extends PDO{
 
 	protected static $instance = null;
 
-	public function __construct($dsn = null, $username = null, $password = null, array $driver_options = null){
+	public function __construct(?string $dsn = null, ?string $username = null, ?string $password = null, ?array $driver_options = null){
 
 		// Get the System DB Config
 		global $databaseConfig;
