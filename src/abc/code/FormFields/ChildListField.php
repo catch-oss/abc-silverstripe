@@ -6,6 +6,8 @@ use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\View\SSViewer;
 use SilverStripe\Forms\LiteralField;
 use Azt3k\SS\Classes\AbcPaginator;
+use SilverStripe\Control\Controller;
+
 /**
  * This field lets you put an arbitrary piece of HTML into your forms.
  *
@@ -28,7 +30,7 @@ class ChildListField extends LiteralField {
 	 */
 	protected $content;
 
-	function __construct($controller, $name, $class = 'Page', $limit = 30) {
+	function __construct(Controller $controller, $name, $class = 'Page', $limit = 30) {
 
 		Requirements::javascript(ABC_PATH . '/javascript/child-list.js');
 		Requirements::css(ABC_PATH . '/css/child-list.css');

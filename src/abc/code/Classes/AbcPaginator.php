@@ -1,20 +1,23 @@
 <?php
+
 namespace Azt3k\SS\Classes;
+
 use Azt3k\SS\Classes\AbcURL;
 use SilverStripe\View\Requirements;
 use Azt3k\SS\Classes\DataObjectHelper;
+use SilverStripe\Core\Environment;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ViewableData;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\ORM\DataList;
 
 /**
  * @todo join is broken  - ss3 changed the way it handles joins
  */
-class AbcPaginator extends ViewableData {
+class AbcPaginator extends ViewableData
+{
 
 	public static $defaultPageVar = 'page';
 	public static $defaultHitsVar = 'hits';
@@ -35,63 +38,66 @@ class AbcPaginator extends ViewableData {
 	 *	@Param 	$pageVar 			(str)	The url param that contains the current page
 	 *	@Param 	$hitsVar 			(str) 	The url param that contains the number of hits to display in the current result set
 	 */
-	public function __construct($initHitsPerPage = null, $pageVar = null, $hitsVar = null){
+	public function __construct($initHitsPerPage = null, $pageVar = null, $hitsVar = null)
+	{
 
 		// requirements
-		Requirements::javascript(ABC_PATH.'/javascript/pagination.js');
+		Requirements::javascript(ABC_PATH . '/javascript/pagination.js');
 
 		// Set up environment
-		$this->pageVar 			= $pageVar 		? $pageVar 		: self::$defaultPageVar ;
-		$this->hitsVar 			= $hitsVar 			? $hitsVar 			: self::$defaultHitsVar ;
-		$this->initHitsPerPage 	= $initHitsPerPage 	? $initHitsPerPage 	: self::$defaultInitHitsPerPage ;
+		$this->pageVar 			= $pageVar 		? $pageVar 		: self::$defaultPageVar;
+		$this->hitsVar 			= $hitsVar 			? $hitsVar 			: self::$defaultHitsVar;
+		$this->initHitsPerPage 	= $initHitsPerPage 	? $initHitsPerPage 	: self::$defaultInitHitsPerPage;
 
 		// Set the Pagination Vars
-		$page 	= (empty($_GET[$this->pageVar]) || !is_numeric($_GET[$this->pageVar]) || (int) $_GET[$this->pageVar] < 1) ? 1 						: (int) $_GET[$this->pageVar] ;
-		$hits 	= (empty($_GET[$this->hitsVar]) || !is_numeric($_GET[$this->hitsVar]) || (int) $_GET[$this->hitsVar] < 1) ? $this->initHitsPerPage 	: (int) $_GET[$this->hitsVar] ;
+		$page 	= (empty($_GET[$this->pageVar]) || !is_numeric($_GET[$this->pageVar]) || (int) $_GET[$this->pageVar] < 1) ? 1 						: (int) $_GET[$this->pageVar];
+		$hits 	= (empty($_GET[$this->hitsVar]) || !is_numeric($_GET[$this->hitsVar]) || (int) $_GET[$this->hitsVar] < 1) ? $this->initHitsPerPage 	: (int) $_GET[$this->hitsVar];
 		$this->currentPage = $page;
-		$this->start = $page == 1 ? 0 : ($hits * ($page-1));
+		$this->start = $page == 1 ? 0 : ($hits * ($page - 1));
 		$this->limit = $hits;
 
 		parent::__construct();
-
 	}
 
-	public function HitsSelector($baseURL,$options = null){
+	public function HitsSelector($baseURL, $options = null)
+	{
 
 		$dropdownOptions = array();
-		if ( $options && count($options) ){
-			foreach($options as $option){
-				$dropdownOptions[AbcURL::get($baseURL)->q(array( $this->hitsVar => $option, $this->pageVar => 1))->URL] = $option;
+		if ($options && count($options)) {
+			foreach ($options as $option) {
+				$dropdownOptions[AbcURL::get($baseURL)->q(array($this->hitsVar => $option, $this->pageVar => 1))->URL] = $option;
 			}
-		}else{
-			$default = array(12,24,36,48,60);
-			foreach($default as $dindex){
-				$dropdownOptions[AbcURL::get($baseURL)->q(array( $this->hitsVar => $dindex, $this->pageVar => 1))->URL] = $dindex;
+		} else {
+			$default = array(12, 24, 36, 48, 60);
+			foreach ($default as $dindex) {
+				$dropdownOptions[AbcURL::get($baseURL)->q(array($this->hitsVar => $dindex, $this->pageVar => 1))->URL] = $dindex;
 			}
 		}
 
-        return new DropdownField(
-    		$name = 'Hits',
-    		$title = ' ',
-    		$source = $dropdownOptions,
-    		$value = AbcURL::get($baseURL)->q(array( $this->hitsVar => $this->limit, $this->pageVar => 1))->URL
-        );
+		return new DropdownField(
+			$name = 'Hits',
+			$title = ' ',
+			$source = $dropdownOptions,
+			$value = AbcURL::get($baseURL)->q(array($this->hitsVar => $this->limit, $this->pageVar => 1))->URL
+		);
 	}
 
 	/*
 	 *	Static instance getter for getting a new instance for chaining
 	 */
-	public static function get($initHitsPerPage = null, $pageVar = null, $hitsVar = null){
+	public static function get($initHitsPerPage = null, $pageVar = null, $hitsVar = null)
+	{
 		return new self($initHitsPerPage, $pageVar, $hitsVar);
 	}
 
 	/*
 	 *	DataObject::get Wrapper
 	 */
-	public function fetch($callerClass, $filter = "", $sort = "", $join = "", $limit = "", $containerClass = "DataList"){
+	public function fetch($callerClass, $filter = "", $sort = "", $join = "", $limit = "", $containerClass = "DataList")
+	{
 
 		// set default limit
-		if (!$limit) $limit = $this->start.",".$this->limit;
+		if (!$limit) $limit = $this->start . "," . $this->limit;
 
 		// fetch unlimited row count
 		$unlimitedRowCount = $this->getUnlimitedRowCount($callerClass, $filter, $join);
@@ -108,51 +114,54 @@ class AbcPaginator extends ViewableData {
 	/*
 	 *	@Todo - Extension table support
 	 */
-	public static function getUnlimitedRowCount($callerClass, $filter = "", $join = ""){
+	public static function getUnlimitedRowCount($callerClass, $filter = "", $join = "")
+	{
 
 		// Init some vars
 		$oTable = $table = DataObjectHelper::getTableForClass($callerClass);
-		if (Injector::inst()->has_extension($callerClass,'Versioned')) {
-			$stage = Versioned::current_stage();
-			$table = $oTable.($stage == 'Live' ? '_'.$stage : '');
+		if (Injector::inst()->get($callerClass)->has_extension('Versioned')) {
+			$stage = Versioned::get_stage();
+			$table = $oTable . ($stage == 'Live' ? '_' . $stage : '');
 		}
 		$wSQL = "";
+		$databaseName = Environment::getEnv('SS_DATABASE_NAME');
 		//$sql = "SELECT COUNT(*) as total FROM ".$table;
-		$sql = "SELECT COUNT(*) as total FROM ".SS_SITE_DATABASE_NAME.'.'.$table;
+		$sql = "SELECT COUNT(*) as total FROM " . $databaseName . '.' . $table;
 
 		// join
-		if ($join) $sql.= " ".$join;
-		if ($oTable != $callerClass && DataObjectHelper::tableExists($callerClass)) $sql.= " LEFT JOIN ".$callerClass." ON ".$table.".ID = ".$callerClass.".ID";
+		if ($join) $sql .= " " . $join;
+		if ($oTable != $callerClass && DataObjectHelper::tableExists($callerClass)) $sql .= " LEFT JOIN " . $callerClass . " ON " . $table . ".ID = " . $callerClass . ".ID";
 
 		// Add caller class filter if its on a shared table
-		if ($callerClass != $oTable){
-			$wSQL.= $wSQL ? " AND " : " WHERE " ;
-			$wSQL.= "(".$table.".ClassName='".$callerClass."'";
+		if ($callerClass != $oTable) {
+			$wSQL .= $wSQL ? " AND " : " WHERE ";
+			$wSQL .= "(" . $table . ".ClassName='" . $callerClass . "'";
 
 			if ($subclasses = DataObjectHelper::getSubclassesOf($callerClass)) {
-				foreach($subclasses as $subclass) {
-					$wSQL.= " OR ".$table.".ClassName='".$subclass."'";
+				foreach ($subclasses as $subclass) {
+					$wSQL .= " OR " . $table . ".ClassName='" . $subclass . "'";
 				}
 			}
 
-			$wSQL.= ")";
+			$wSQL .= ")";
 		}
 
 		// Filter
-		if ($filter){
-			$wSQL.= $wSQL ? " AND " : " WHERE " ;
-			$wSQL.= "(".$filter.")";
+		if ($filter) {
+			$wSQL .= $wSQL ? " AND " : " WHERE ";
+			$wSQL .= "(" . $filter . ")";
 		}
 
 		//finalise
-		$sql.=$wSQL;
+		$sql .= $wSQL;
 
 		return self::getUnlimitedRowCountForSQL($sql);
 	}
 
-	public static function getUnlimitedRowCountForSQL($sql){
+	public static function getUnlimitedRowCountForSQL($sql)
+	{
 		$r = AbcDB::getInstance()->query($sql);
-		if ( $r ) return $r->fetch(PDO::FETCH_OBJ)->total;
+		if ($r) return $r->fetch(\PDO::FETCH_OBJ)->total;
 
 		return false;
 	}
@@ -161,7 +170,8 @@ class AbcPaginator extends ViewableData {
 	 *	Makes Pagination data for the template.
 	 * 	NB Next, Last and CurrentPage are reserved keywords
 	 */
-	public function dataForTemplate($totalHits = null, $pageDisplayRange = null, $baseURL = null, $hitsSelectorOptions = null){
+	public function dataForTemplate($totalHits = null, $pageDisplayRange = null, $baseURL = null, $hitsSelectorOptions = null)
+	{
 
 		// check if we have total hits
 		if ($totalHits === null) $totalHits = $this->unlimitedRowCount;
@@ -170,7 +180,7 @@ class AbcPaginator extends ViewableData {
 		if ($pageDisplayRange === null) $pageDisplayRange = self::$defaultPageDisplayRange;
 
 		// init vars
-		$this->totalPages = $totalPages = ceil($totalHits/$this->limit);
+		$this->totalPages = $totalPages = ceil($totalHits / $this->limit);
 		$pageLinks	= new DataObject;
 		$return 	= new DataObject;
 
@@ -179,10 +189,10 @@ class AbcPaginator extends ViewableData {
 		$pageLinks->Total = $totalPages;
 
 		// Prep page links
-		if ($this->currentPage > 1+$pageDisplayRange)			$pageLinks->FirstPage		= AbcURL::get($baseURL)->q(array('hits'=>$this->limit,'page'=>1))->URL;
-		if ($this->currentPage < $totalPages-$pageDisplayRange)	$pageLinks->LastPage		= AbcURL::get($baseURL)->q(array('hits'=>$this->limit,'page'=>$totalPages))->URL;
-		if ($this->currentPage != 1)							$pageLinks->PreviousPage 	= AbcURL::get($baseURL)->q(array('hits'=>$this->limit,'page'=>($this->currentPage - 1)))->URL;
-		if ($this->currentPage != $totalPages)					$pageLinks->NextPage 		= AbcURL::get($baseURL)->q(array('hits'=>$this->limit,'page'=>($this->currentPage + 1)))->URL;
+		if ($this->currentPage > 1 + $pageDisplayRange)			$pageLinks->FirstPage		= AbcURL::get($baseURL)->q(array('hits' => $this->limit, 'page' => 1))->URL;
+		if ($this->currentPage < $totalPages - $pageDisplayRange)	$pageLinks->LastPage		= AbcURL::get($baseURL)->q(array('hits' => $this->limit, 'page' => $totalPages))->URL;
+		if ($this->currentPage != 1)							$pageLinks->PreviousPage 	= AbcURL::get($baseURL)->q(array('hits' => $this->limit, 'page' => ($this->currentPage - 1)))->URL;
+		if ($this->currentPage != $totalPages)					$pageLinks->NextPage 		= AbcURL::get($baseURL)->q(array('hits' => $this->limit, 'page' => ($this->currentPage + 1)))->URL;
 
 		// page quick links
 		$pageLinks->QuickLinks = new ArrayList;
@@ -194,9 +204,9 @@ class AbcPaginator extends ViewableData {
 		if ($minShow < 1)						$minShow = 1;
 
 		// make links
-		for($i = $minShow; $i <= $maxShow; $i++){
+		for ($i = $minShow; $i <= $maxShow; $i++) {
 			$link = new DataObject;
-			$link->PageLink = $i == $this->currentPage ? null : AbcURL::get($baseURL)->q(array('hits'=>$this->limit,'page'=>$i))->URL ;
+			$link->PageLink = $i == $this->currentPage ? null : AbcURL::get($baseURL)->q(array('hits' => $this->limit, 'page' => $i))->URL;
 			$link->PageNum = $i;
 			$pageLinks->QuickLinks->push($link);
 		}
@@ -204,12 +214,12 @@ class AbcPaginator extends ViewableData {
 		// die($totalHits .' vs '. $this->limit);
 
 		// Prep return data
-		$return->HitsSelector			= $this->HitsSelector($baseURL,$hitsSelectorOptions);
+		$return->HitsSelector			= $this->HitsSelector($baseURL, $hitsSelectorOptions);
 		$return->TotalHits				= strval($totalHits);
 		$return->TotalPages				= strval($totalPages);
 		$return->CurrentPageNum			= strval($this->currentPage);
 		$return->HitsPerPage			= strval($this->limit);
-		$return->PaginatorRequired		= $totalHits <= $this->limit ? false : true ;
+		$return->PaginatorRequired		= $totalHits <= $this->limit ? false : true;
 		$return->PageLinks				= $pageLinks;
 		$return->PageLinks->Paginator	= $this;
 
@@ -218,16 +228,18 @@ class AbcPaginator extends ViewableData {
 		return $return;
 	}
 
-	public function IsCurrent($pageNum) {
-		return $this->currentPage == $pageNum ? true : false ;
+	public function IsCurrent($pageNum)
+	{
+		return $this->currentPage == $pageNum ? true : false;
 	}
 
-	public function IsFirst() {
+	public function IsFirst()
+	{
 		return $this->IsCurrent(1);
 	}
 
-	public function IsLast() {
+	public function IsLast()
+	{
 		return $this->IsCurrent($this->totalPages);
 	}
-
 }

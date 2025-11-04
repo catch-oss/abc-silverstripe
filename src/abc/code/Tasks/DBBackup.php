@@ -1,12 +1,17 @@
 <?php
+
 namespace Azt3k\SS\Tasks;
+
 use SilverStripe\Control\Director;
 use SilverStripe\Dev\BuildTask;
 use Azt3k\SS\Classes\MySQLDump;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Kernel;
 
 // 0 * * * * php /var/www/vhosts/rowingnz/rowing/project/sapphire/cli-script.php dev/tasks/DBBackup > /var/www/vhosts/rowingnz/rowing/project/logs/DBBuild.log
 
-class DBBackup extends BuildTask {
+class DBBackup extends BuildTask
+{
 
 	protected $title		= ' Backup';
 	protected $description 	= 'Creates a data dump';
@@ -17,15 +22,18 @@ class DBBackup extends BuildTask {
 	 *
 	 * @param SS_HTTPRequest $httpRequest
 	 */
-	function run($httpRequest) {
+	function run($httpRequest)
+	{
 
 		global $databaseConfig;
 
 		// environment type
-		Director::set_environment_type("dev");
+		/** @var Kernel $kernel */
+		$kernel = Injector::inst()->get(Kernel::class);
+		return $kernel->setEnvironment('dev');
 
 		// debug
-		ini_set("display_errors","2");
+		ini_set("display_errors", "2");
 		ERROR_REPORTING(E_ALL);
 
 		/*
@@ -48,35 +56,35 @@ class DBBackup extends BuildTask {
 		$dbuser 				= $databaseConfig['username'];
 		$dbpass   				= $databaseConfig['password'];
 		$dbname  				= $databaseConfig['database'];
-		$backupfolder 			= __DIR__.'/../../db_backups';
-		$dumpfile	 			= $backupfolder."/".$dbname."_".date("Y-m-d_H-i-s").".sql";
+		$backupfolder 			= __DIR__ . '/../../db_backups';
+		$dumpfile	 			= $backupfolder . "/" . $dbname . "_" . date("Y-m-d_H-i-s") . ".sql";
 
 
 		$backup = new MySQLDump();
 		$backup->droptableifexists = $drop_table_if_exists;
-		$backup->connect($dbhost,$dbuser,$dbpass,$dbname); //Connect To Database
+		$backup->connect($dbhost, $dbuser, $dbpass, $dbname); //Connect To Database
 
-		if (!$backup->connected) { die('Error: '.$backup->mysql_error); } //On Failed Connection, Show Error.
+		if (!$backup->connected) {
+			die('Error: ' . $backup->mysql_error);
+		} //On Failed Connection, Show Error.
 
 		$backup->list_tables(); //List Database Tables.
 		$broj = count($backup->tables); //Count Database Tables.
 		$output = '';
 
-		echo "found ".$broj." tables \n\n";
+		echo "found " . $broj . " tables \n\n";
 
-		for ($i=0; $i<$broj; $i++) {
+		for ($i = 0; $i < $broj; $i++) {
 
 			$table_name = $backup->tables[$i]; //Get Table Names.
 			$backup->dump_table($table_name); //Dump Data to the Output Buffer.
-			$output.= $backup->output;
-
+			$output .= $backup->output;
 		}
 
 		if (!is_dir($backupfolder)) mkdir($backupfolder);
 		file_put_contents($dumpfile, $output);
-		echo "Dumped into ".$dumpfile;
+		echo "Dumped into " . $dumpfile;
 		//echo "<pre>".$output."</pre>";
 
 	}
-
 }

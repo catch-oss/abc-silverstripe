@@ -5,10 +5,10 @@ use SilverStripe\ORM\DataObject;
 use \Exception;
 use \ReflectionClass;
 use SilverStripe\Core\ClassInfo;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Extension;
+use SilverStripe\ORM\DB;
 
 class DataObjectHelper {
 
