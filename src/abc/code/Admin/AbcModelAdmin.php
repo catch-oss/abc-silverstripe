@@ -1,22 +1,25 @@
 <?php
+
 namespace Azt3k\SS\Admin;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldFilterHeader;
+
 use Azt3k\SS\Forms\AbcModelAdminForm;
+use SilverStripe\Admin\CMSMenu;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\GridField\GridFieldPrintButton;
 use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\ORM\ArrayList;
 
 /**
  * AddModelAdmin is an extension of ModelAdmin designed to allow some customisation to the edit form etc.
  *
  * @author AzT3k
  */
-class AbcModelAdmin extends ModelAdmin {
+class AbcModelAdmin extends ModelAdmin
+{
 
 	/**
 	 * This method generates the list view form
@@ -26,7 +29,8 @@ class AbcModelAdmin extends ModelAdmin {
 	 * @param type $fields
 	 * @return \AbcModelAdminForm
 	 */
-	function getEditForm($id = null, $fields = null) {
+	function getEditForm($id = null, $fields = null)
+	{
 
 		$list = $this->getList();
 		$exportButton = new GridFieldExportButton('before');
@@ -35,14 +39,14 @@ class AbcModelAdmin extends ModelAdmin {
 			$this->sanitiseClassName($this->modelClass),
 			false,
 			$list,
-			$fieldConfig = AddGridFieldConfig_RecordEditor::create($this->stat('page_length'))
+			$fieldConfig = GridFieldConfig_RecordEditor::create($this->stat('page_length'))
 				->addComponent($exportButton)
 				->removeComponentsByType('GridFieldFilterHeader')
 				->addComponents(new GridFieldPrintButton('before'))
 		);
 
 		// Validation
-		if(singleton($this->modelClass)->hasMethod('getCMSValidator')) {
+		if (singleton($this->modelClass)->hasMethod('getCMSValidator')) {
 			$detailValidator = singleton($this->modelClass)->getCMSValidator();
 			$listField->getConfig()->getComponentByType('GridFieldDetailForm')->setValidator($detailValidator);
 		}
@@ -62,5 +66,4 @@ class AbcModelAdmin extends ModelAdmin {
 
 		return $form;
 	}
-
 }

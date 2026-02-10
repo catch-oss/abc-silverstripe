@@ -12,6 +12,8 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 
 class DataObjectSearch implements Flushable {
 
@@ -172,7 +174,7 @@ class DataObjectSearch implements Flushable {
 
 
             // Set some vars
-            $set = new ArrayList;
+            $set = new ArrayList();
             $db  = AbcDB::getInstance();
             $sql = '';
 
@@ -261,7 +263,7 @@ class DataObjectSearch implements Flushable {
             // Get Data
             // die($sql);
             $result = $db->query($sql);
-            $result = $result ? $result->fetchAll(PDO::FETCH_OBJ) : array() ;
+            $result = $result ? $result->fetchAll(\PDO::FETCH_OBJ) : array() ;
 
             // Convert to DOs
             foreach( $result as $entry ){
@@ -280,7 +282,7 @@ class DataObjectSearch implements Flushable {
             $res = $db->query('SELECT FOUND_ROWS() AS total');
             $set->unlimitedRowCount = 0;
             if (!empty($res)) {
-                $resObj = $res->fetch(PDO::FETCH_OBJ);
+                $resObj = $res->fetch(\PDO::FETCH_OBJ);
                 if (!empty($resObj)) {
                     $set->unlimitedRowCount = $resObj->total;
                 }
