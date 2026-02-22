@@ -91,28 +91,14 @@ class DataObjectHelper {
 		// If the result is already cached use that
 		if (!empty(self::$dOTableMap[$className])) return self::$dOTableMap[$className] ;
 
-		// Find the Table Mapping
-		$class = new ReflectionClass($className);
-		$lineage = array();
-		$i = 0;
+		// Use the SS6 schema API to resolve the table name
+		$table = DataObject::getSchema()->tableName($className);
 
-		// go through parent classes and look for the one that will have created a db table
-		while ($class = $class->getParentClass()) {
-
-			$currentClass = $class->getName();
-
-			// Cache and return the table mapping
-			if ($currentClass == 'DataObject'){
-				$k = $i-1;
-				$table = $k < 0 ? $className : $lineage[$k] ;
-				self::$dOTableMap[$className] = $table;
-				return $table;
-			}
-
-			$lineage[] = $currentClass;
-			$i++;
-
+		if ($table) {
+			self::$dOTableMap[$className] = $table;
 		}
+
+		return $table;
 
 	}
 
@@ -222,13 +208,11 @@ class DataObjectHelper {
 
 	protected static function getFieldsForObj($obj) {
 
-		$dbFields = array();
-
-		// if custom fields are specified, only select these
-		$dbFields = $obj->inheritedDatabaseFields();
+		// Get all database fields from the schema (SS6 replacement for inheritedDatabaseFields)
+		$dbFields = DataObject::getSchema()->fieldSpecs(get_class($obj));
 
 		// add default required fields
-		$dbFields = array_merge($dbFields, array('ID'=>'Int'));
+		$dbFields = array_merge($dbFields, array('ID' => 'Int'));
 
 		return $dbFields;
 	}
