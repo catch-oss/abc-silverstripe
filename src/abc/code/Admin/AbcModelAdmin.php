@@ -11,7 +11,7 @@ use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 
 /**
  * AddModelAdmin is an extension of ModelAdmin designed to allow some customisation to the edit form etc.

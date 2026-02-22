@@ -3,7 +3,7 @@
 namespace Azt3k\SS\Tasks;
 
 use SilverStripe\Control\Director;
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 use Azt3k\SS\Classes\MySQLDump;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Kernel;

@@ -1,12 +1,12 @@
 <?php
 namespace Azt3k\SS\Extensions;
 use SilverStripe\Control\Director;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * @author AzT3K
  */
-class AbcSiteTreeExtension extends DataExtension {
+class AbcSiteTreeExtension extends Extension {
 
     private static $indexes = array(
         'Title' => true,

@@ -1,6 +1,6 @@
 <?php
 namespace Azt3k\SS\Tasks;
-use SilverStripe\Dev\BuildTask;
+use SilverStripe\PolyExecution\PolyCommand;
 use SilverStripe\ORM\DataObject;
 
 class PublishAllPages extends BuildTask {
