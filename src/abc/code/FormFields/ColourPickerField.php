@@ -5,7 +5,7 @@ use SilverStripe\Forms\TextField;
 
 class ColourPickerField extends TextField {
 
-	public function __construct($name, $title = null, $value = '', $maxLength = null, $form = null) {
+	public function __construct(string $name, ?string $title = null, string $value = '', ?int $maxLength = null, ?object $form = null) {
 
 		parent::__construct($name, $title, $value, $maxLength, $form);
 

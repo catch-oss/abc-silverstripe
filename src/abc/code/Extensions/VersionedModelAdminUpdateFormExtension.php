@@ -15,11 +15,11 @@ use SilverStripe\Core\Extension;
  */
 class VersionedModelAdminUpdateFormExtension extends Extension {
 
-	function onBeforeInit() {
+	public function onBeforeInit(): void {
 		Versioned::set_stage('Stage');
 	}
 
-	function updateEditForm($form) {
+	public function updateEditForm($form): void {
 		$fieldList = $form->Fields();
 
 		foreach($fieldList as $field) {

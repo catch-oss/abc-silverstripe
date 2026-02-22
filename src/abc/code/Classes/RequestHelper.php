@@ -1,21 +1,12 @@
 <?php
+
 namespace Azt3k\SS\Classes;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * Description of RequestHelper
- *
- * @author AzT3k
- */
-class RequestHelper {
-
-	public static function is_ie() {
-	    $u_agent = $_SERVER['HTTP_USER_AGENT'];
-	    if (preg_match('/MSIE/i',$u_agent)) return true;
-	    else return false;
-	}
+class RequestHelper
+{
+    public static function is_ie(): bool
+    {
+        $u_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+        return (bool) preg_match('/MSIE/i', $u_agent);
+    }
 }

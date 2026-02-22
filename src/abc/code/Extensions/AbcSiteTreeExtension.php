@@ -16,12 +16,12 @@ class AbcSiteTreeExtension extends Extension {
         )
     );
 
-    public function HashedPath($file, $extension = null) {
+    public function HashedPath(string $file, ?string $extension = null): string {
         $absPath = Director::getAbsFile(trim($file  . ($extension ? '.' . $extension : ''), '/'));
         return $file . '?h=' . sha1_file($absPath);
     }
 
-    public function TimestampedPath($file, $extension = null) {
+    public function TimestampedPath(string $file, ?string $extension = null): string {
         $absPath = Director::getAbsFile(trim($file . ($extension ? '.' . $extension : ''), '/'));
         return $file . '?m=' . filemtime($absPath);
     }

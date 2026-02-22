@@ -29,7 +29,7 @@ class AbcModelAdmin extends ModelAdmin
 	 * @param type $fields
 	 * @return \AbcModelAdminForm
 	 */
-	function getEditForm($id = null, $fields = null)
+	public function getEditForm($id = null, $fields = null)
 	{
 
 		$list = $this->getList();

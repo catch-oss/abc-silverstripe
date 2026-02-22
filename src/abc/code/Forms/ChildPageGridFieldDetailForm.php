@@ -16,7 +16,7 @@ class ChildPageGridFieldDetailForm extends VersionedGridFieldDetailForm
 
     protected $parent;
 
-    public function __construct($name = 'DetailForm', $parent = null)
+    public function __construct(string $name = 'DetailForm', ?DataObject $parent = null)
     {
         parent::__construct($name);
         $this->parent = $parent;
