@@ -285,7 +285,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
                 throw new ValidationException(_t('GridFieldDetailForm.DeletePermissionsFailure', 'No delete permissions'), 0);
             }
         } catch (ValidationException $e) {
-            $form->sessionMessage(implode(', ', $e->getResult()->getMessages()), 'bad');
+            $form->sessionMessage($e->getMessage(), 'bad');
 
             return Controller::curr()->redirectBack();
         }

@@ -1,35 +1,33 @@
 <?php
+
 namespace Azt3k\SS\Tasks;
+
+use Page;
 use SilverStripe\PolyExecution\PolyCommand;
-use SilverStripe\ORM\DataObject;
+use Symfony\Component\Console\Input\InputInterface;
 
-class PublishAllPages extends BuildTask {
-	
-	protected $title		= 'Publish all Pages';
-	protected $description 	= 'Publish all Pages';
-	protected $enabled 		= true;
+class PublishAllPages extends PolyCommand
+{
+    protected static string $commandName = 'abc:publish-all-pages';
+    protected static string $description = 'Publish all Pages';
 
-	/**
-	 * Run the task, and do the business
-	 *
-	 * @param SS_HTTPRequest $httpRequest 
-	 */
-	function run($httpRequest) {
+    public function getTitle(): string
+    {
+        return 'Publish all Pages';
+    }
 
-		echo 'running publish all pages task...';
+    public function run(InputInterface $input, \SilverStripe\PolyExecution\PolyOutput $output): int
+    {
+        $output->writeln('running publish all pages task...');
 
-		$pages = DataObject::get('Page');
-		foreach($pages as $page){
-			$page->doPublish();
-			echo "published ".$page->Title."<br />";
-		}
+        $pages = Page::get();
+        foreach ($pages as $page) {
+            $page->publishRecursive();
+            $output->writeln('published ' . $page->Title);
+        }
 
-		$pages = DataObject::get('Album');
-		foreach($pages as $page){
-			$page->doPublish();
-			echo "published ".$page->Title."<br />";
-		}		
-		echo 'finished';
-	}
-	
+        $output->writeln('finished');
+
+        return self::SUCCESS;
+    }
 }

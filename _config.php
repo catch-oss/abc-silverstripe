@@ -14,10 +14,6 @@ define('ABC_PATH', $dir_name . '/src/abc');
 // Configure Image Extension
 AbcImageExtension::$fallback_image = ABC_PATH . '/images/no-image.jpg';
 
-// DatePicker config
-//Object::useCustomClass('DateField_View_JQuery', 'jQueryUIDateField_View');
-
-
 // remove the abc model admin from the side bar as it can't be used
 // without direct managed models, and it seems this class is 
 // designed to be extended, not used directly

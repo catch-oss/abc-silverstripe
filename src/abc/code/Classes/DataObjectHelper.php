@@ -8,6 +8,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Extension;
+use SilverStripe\Core\Environment;
 use SilverStripe\ORM\DB;
 
 class DataObjectHelper {
@@ -21,8 +22,7 @@ class DataObjectHelper {
 	protected static $dOExtTablePropertyMap	= array();
 
 	protected static function db_dialect() {
-		global $databaseConfig;
-		return $databaseConfig['type'];
+		return Environment::getEnv('SS_DATABASE_CLASS') ?: 'MySQLDatabase';
 	}
 
 	public static function versioned_table($className) {
@@ -269,7 +269,7 @@ class DataObjectHelper {
 					$tmp = $do->$incl;
 				}
 			}
-			if( $tmp && is_object($tmp) && is_a($tmp, 'DataObjectSet') ){
+			if( $tmp && is_object($tmp) && ($tmp instanceof \SilverStripe\ORM\SS_List) ){
 				if($depth > $currentDepth){
 					$r = array();
 					foreach($tmp as $item){

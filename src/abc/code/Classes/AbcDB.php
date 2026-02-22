@@ -1,39 +1,39 @@
 <?php
+
 namespace Azt3k\SS\Classes;
-use \PDO;
 
-class AbcDB extends PDO{
+use PDO;
+use SilverStripe\Core\Environment;
 
-	protected static $instance = null;
+class AbcDB extends PDO
+{
+    protected static ?self $instance = null;
 
-	public function __construct(?string $dsn = null, ?string $username = null, ?string $password = null, ?array $driver_options = null){
+    public function __construct(?string $dsn = null, ?string $username = null, ?string $password = null, ?array $driver_options = null)
+    {
+        if (!$dsn) {
+            $server = Environment::getEnv('SS_DATABASE_SERVER') ?: 'localhost';
+            $dbName = Environment::getEnv('SS_DATABASE_NAME') ?: '';
+            $dsn = 'mysql:host=' . $server . ';dbname=' . $dbName;
+        }
 
-		// Get the System DB Config
-		global $databaseConfig;
+        if (!$username) {
+            $username = Environment::getEnv('SS_DATABASE_USERNAME') ?: 'root';
+        }
 
-		// Make the config easier to work with
-		$conf = (object) $databaseConfig;
+        if (!$password) {
+            $password = Environment::getEnv('SS_DATABASE_PASSWORD') ?: '';
+        }
 
-		// fix for sqlite dbs
-		$type = strtolower(str_replace('Database', '', $conf->type));
-		if ($type == 'sqlitepdo') $type = 'sqlite';
-		if ($type == 'mysqlpdo') $type = 'mysql';
+        parent::__construct($dsn, $username, $password, $driver_options);
+    }
 
-		// DSN
-		if (!$dsn) $dsn = $type . ':' . 'host='.$conf->server . ';' . 'dbname=' . $conf->database;
+    public static function getInstance(): self
+    {
+        if (empty(self::$instance)) {
+            self::$instance = new self();
+        }
 
-		// Authentication
-		if (!$username) $username =	$conf->username;
-		if (!$password) $password =	$conf->password;
-
-		// Connect
-		parent::__construct($dsn, $username, $password, $driver_options);
-
-	}
-
-	public static function getInstance(){
-		if (empty(self::$instance)) self::$instance = new self;
-		return self::$instance;
-	}
-
+        return self::$instance;
+    }
 }
