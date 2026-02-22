@@ -1,25 +1,25 @@
 SilverStripe\Admin\ModelAdmin:
   extensions:
-    - Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
+    abc_versioned_model_admin: Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
 SilverStripe\Assets\Image:
   extensions:
-    - Azt3k\SS\Extensions\AbcImageExtension
+    abc_image: Azt3k\SS\Extensions\AbcImageExtension
 SilverStripe\Assets\File:
   extensions:
-    - Azt3k\SS\Extensions\AbcFileExtension
+    abc_file: Azt3k\SS\Extensions\AbcFileExtension
 SilverStripe\Admin\LeftAndMain:
   url_segment: process-requirements
   extensions:
-    - Azt3k\SS\Extensions\AbcLeftAndMainExtension
+    abc_left_and_main: Azt3k\SS\Extensions\AbcLeftAndMainExtension
 SilverStripe\CMS\Model\SiteTree:
   extensions:
-    - Azt3k\SS\Extensions\AbcSiteTreeExtension
+    abc_site_tree: Azt3k\SS\Extensions\AbcSiteTreeExtension
 SilverStripe\Security\Security:
   extensions:
-    - Azt3k\SS\Extensions\AbcSecurityExtension
+    abc_security: Azt3k\SS\Extensions\AbcSecurityExtension
 SilverStripe\Control\Controller:
   extensions:
-    - Azt3k\SS\Extensions\AbcControllerExtension
+    abc_controller: Azt3k\SS\Extensions\AbcControllerExtension
 SilverStripe\ORM\FieldType\DBHTMLText:
   extensions:
-    - Azt3k\SS\Extensions\HTMLTextExtension
+    abc_html_text: Azt3k\SS\Extensions\HTMLTextExtension
