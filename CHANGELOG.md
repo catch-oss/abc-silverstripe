@@ -9,8 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Changed
 - Upgraded to Silverstripe 6 compatibility
 - Updated PHP requirement to ^8.5
-- Migrated test suite to PHPUnit 11 (55 tests)
+- Migrated test suite to PHPUnit 11 (63 tests)
 - `PublishAllPages` and `DBBackup` rewritten as PolyCommand (replaces BuildTask)
+- `MySQLDump` rewritten to use PDO instead of removed `mysql_*` functions
 - `DataObjectHelper::getTableForClass()` now uses schema API
 - `DataObjectHelper::getFieldsForObj()` uses `DataObject::getSchema()->fieldSpecs()`
 - `AbcDB` uses `Environment::getEnv()` instead of `global $databaseConfig`
@@ -24,7 +25,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - 15 test files covering utilities, extensions, forms, grid fields, and tasks
 
 ### Removed
-- `MySQLDump` class (used `mysql_*` functions removed in PHP 7)
 - `AbcForm::getSubForms()` (relied on SS3 `$_CLASS_MANIFEST`)
 - `AbcModule::load()` deprecated (relied on `THIRDPARTY_DIR` removed in SS6)
 
