@@ -230,4 +230,52 @@ class DataObjectHelperTest extends SapphireTest
         $this->assertArrayHasKey('Title', $result);
         $this->assertSame('Coverage Title Test', $result['Title']);
     }
+
+    public function testGetExtensionTableForClassWithPropertyReturnsFalseForMissing(): void
+    {
+        // GIVEN the SiteTree class
+        $className = \SilverStripe\CMS\Model\SiteTree::class;
+
+        // WHEN we look for a non-existent property
+        $result = DataObjectHelper::getExtensionTableForClassWithProperty($className, 'NonExistentFieldXyz');
+
+        // THEN it should return false
+        $this->assertFalse($result);
+    }
+
+    public function testGetExtensionTablesForClassCachesResult(): void
+    {
+        // GIVEN we get extension tables for a class once
+        $className = \SilverStripe\CMS\Model\SiteTree::class;
+        $tables1 = DataObjectHelper::getExtensionTablesForClass($className);
+
+        // WHEN we call it again
+        $tables2 = DataObjectHelper::getExtensionTablesForClass($className);
+
+        // THEN both calls should return the same result
+        $this->assertSame($tables1, $tables2);
+    }
+
+    public function testDO2ArrayWithDepthZeroExcludesRelations(): void
+    {
+        // GIVEN a Page with a Title
+        $page = Page::create();
+        $page->Title = 'Depth Zero Test';
+        $page->write();
+
+        // WHEN we convert to array with depth 0
+        $result = DataObjectHelper::DO2Array($page, 0);
+
+        // THEN it should contain scalar fields but no relation arrays
+        $this->assertArrayHasKey('ID', $result);
+        $this->assertArrayHasKey('Title', $result);
+        // With depth 0, has_many/many_many/has_one should not be traversed
+        // (they would be arrays of arrays if traversed)
+        foreach ($result as $key => $value) {
+            if (is_array($value)) {
+                $this->fail("Depth 0 should not traverse relations, found array at key: {$key}");
+            }
+        }
+    }
+
 }

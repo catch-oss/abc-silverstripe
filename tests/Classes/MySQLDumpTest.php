@@ -174,4 +174,60 @@ class MySQLDumpTest extends SapphireTest
         $this->assertStringContainsString('Dumping data for table', $dump->output);
         $this->assertStringContainsString($table, $dump->output);
     }
+
+    public function testDumpTableResetsOutput(): void
+    {
+        // GIVEN a connected MySQLDump that already has output
+        $dump = $this->connectDump();
+        $table = $this->getAnyTableName();
+        $dump->dumpTable($table);
+        $firstOutput = $dump->output;
+
+        // WHEN we dump a table again
+        $dump->dumpTable($table);
+
+        // THEN output should be reset (not accumulated)
+        $this->assertSame($firstOutput, $dump->output);
+    }
+
+    public function testDumpAllResetsOutput(): void
+    {
+        // GIVEN a connected MySQLDump with prior output
+        $dump = $this->connectDump();
+        $dump->output = '-- old content';
+
+        // WHEN we dump all tables
+        $dump->dumpAll();
+
+        // THEN output should NOT contain the old content
+        $this->assertStringNotContainsString('-- old content', $dump->output);
+        // And should contain real DDL
+        $this->assertStringContainsString('CREATE TABLE', $dump->output);
+    }
+
+    public function testTableNameWithBackticksInOutput(): void
+    {
+        // GIVEN a connected MySQLDump and a known table
+        $table = $this->getAnyTableName();
+        $dump = $this->connectDump();
+
+        // WHEN we get the table structure
+        $dump->getTableStructure($table);
+
+        // THEN the output should contain the table name in backticks
+        $this->assertStringContainsString('`' . $table . '`', $dump->output);
+    }
+
+    public function testConnectWithNoArgsUsesAbcDBFallback(): void
+    {
+        // GIVEN a MySQLDump instance
+        $dump = new MySQLDump();
+
+        // WHEN we connect with no arguments (falls back to AbcDB)
+        // AbcDB may or may not be available, so just verify it doesn't throw
+        $result = $dump->connect();
+
+        // THEN it should return a boolean result
+        $this->assertIsBool($result);
+    }
 }

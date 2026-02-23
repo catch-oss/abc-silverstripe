@@ -8,7 +8,7 @@ use SilverStripe\Dev\SapphireTest;
 
 class AbcFileExtensionTest extends SapphireTest
 {
-    protected $usesDatabase = false;
+    protected $usesDatabase = true;
 
     public function testExtensionIsApplied(): void
     {
@@ -32,5 +32,66 @@ class AbcFileExtensionTest extends SapphireTest
         $this->assertContains('pdf', $extensions);
         $this->assertContains('jpg', $extensions);
         $this->assertContains('png', $extensions);
+    }
+
+    public function testGetAllowedExtensionsContainsCommonFormats(): void
+    {
+        // GIVEN the AbcFileExtension class
+        // WHEN we get the allowed extensions
+        $extensions = AbcFileExtension::get_allowed_extensions();
+
+        // THEN it should contain common document, image, video, and archive formats
+        $this->assertContains('doc', $extensions);
+        $this->assertContains('docx', $extensions);
+        $this->assertContains('gif', $extensions);
+        $this->assertContains('mp4', $extensions);
+        $this->assertContains('zip', $extensions);
+        $this->assertContains('csv', $extensions);
+        $this->assertContains('xml', $extensions);
+    }
+
+    public function testGetMimeTypeSplitsOnHyphen(): void
+    {
+        // GIVEN an AbcFileExtension with an owner that has a known file type
+        $ext = new AbcFileExtension();
+        $owner = $this->createStub(File::class);
+        $owner->method('getFileType')->willReturn('image-jpeg');
+        $ext->setOwner($owner);
+
+        // WHEN we get the MIME type
+        $mimeType = $ext->getMimeType();
+
+        // THEN it should return the first segment (before the hyphen)
+        $this->assertSame('image', $mimeType);
+    }
+
+    public function testGetMimeTypeWithNoHyphenReturnsFullType(): void
+    {
+        // GIVEN an AbcFileExtension with an owner that returns a type without hyphens
+        $ext = new AbcFileExtension();
+        $owner = $this->createStub(File::class);
+        $owner->method('getFileType')->willReturn('application');
+        $ext->setOwner($owner);
+
+        // WHEN we get the MIME type
+        $mimeType = $ext->getMimeType();
+
+        // THEN it should return the full string
+        $this->assertSame('application', $mimeType);
+    }
+
+    public function testGetFileSizeDelegatesToOwner(): void
+    {
+        // GIVEN an AbcFileExtension with an owner that has a known size
+        $ext = new AbcFileExtension();
+        $owner = $this->createStub(File::class);
+        $owner->method('getSize')->willReturn('1.5 KB');
+        $ext->setOwner($owner);
+
+        // WHEN we get the file size
+        $size = $ext->getFileSize();
+
+        // THEN it should return the delegated value
+        $this->assertSame('1.5 KB', $size);
     }
 }
