@@ -147,4 +147,31 @@ class MySQLDumpTest extends SapphireTest
             $this->assertStringContainsString('Dumping data for table', $dump->output);
         }
     }
+
+    public function testListTablesReturnsFalseWhenNotConnected(): void
+    {
+        // GIVEN a MySQLDump that is not connected
+        $dump = new MySQLDump();
+
+        // WHEN we try to list tables
+        $result = $dump->listTables();
+
+        // THEN it should return false
+        $this->assertFalse($result);
+    }
+
+    public function testDumpTableContainsStructureAndDataSections(): void
+    {
+        // GIVEN a connected MySQLDump and a known table
+        $table = $this->getAnyTableName();
+        $dump = $this->connectDump();
+
+        // WHEN we dump a single table
+        $dump->dumpTable($table);
+
+        // THEN the output should contain both structure and data markers
+        $this->assertStringContainsString('Dumping structure for table', $dump->output);
+        $this->assertStringContainsString('Dumping data for table', $dump->output);
+        $this->assertStringContainsString($table, $dump->output);
+    }
 }

@@ -4,6 +4,7 @@ namespace Azt3k\SS\Tasks;
 
 use SilverStripe\Core\Environment;
 use SilverStripe\PolyExecution\PolyCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
 class DBBackup extends PolyCommand
@@ -25,7 +26,7 @@ class DBBackup extends PolyCommand
 
         if (!$dbName) {
             $output->writeln('Error: SS_DATABASE_NAME environment variable is not set');
-            return self::FAILURE;
+            return Command::FAILURE;
         }
 
         $backupFolder = dirname(__DIR__, 3) . '/db_backups';
@@ -49,11 +50,11 @@ class DBBackup extends PolyCommand
 
         if ($returnCode !== 0) {
             $output->writeln('Error: mysqldump failed with exit code ' . $returnCode);
-            return self::FAILURE;
+            return Command::FAILURE;
         }
 
         $output->writeln('Created: ' . $dumpFile);
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }

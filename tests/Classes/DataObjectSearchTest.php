@@ -83,4 +83,68 @@ class DataObjectSearchTest extends SapphireTest
         // Cleanup
         DataObjectSearch::set_cache_time(null);
     }
+
+    public function testFlushDoesNotThrow(): void
+    {
+        // GIVEN the DataObjectSearch class
+        // WHEN we call flush
+        DataObjectSearch::flush();
+
+        // THEN no exception should be thrown
+        $this->assertTrue(true);
+    }
+
+    public function testStrToTermsWithEmptyString(): void
+    {
+        // GIVEN an empty string
+        $input = '';
+
+        // WHEN we convert to search terms
+        $terms = DataObjectSearch::str_to_terms($input);
+
+        // THEN it should return an array
+        $this->assertIsArray($terms);
+    }
+
+    public function testStrToTermsFiltersCaseInsensitive(): void
+    {
+        // GIVEN a string with capitalised blacklisted words
+        $input = 'The Quick And The Lazy';
+
+        // WHEN we convert to search terms
+        $terms = DataObjectSearch::str_to_terms($input);
+
+        // THEN blacklisted words should be filtered regardless of case
+        $lowered = array_map('strtolower', $terms);
+        $this->assertNotContains('the', $lowered);
+        $this->assertNotContains('and', $lowered);
+        $this->assertContains('quick', $lowered);
+        $this->assertContains('lazy', $lowered);
+    }
+
+    public function testStrToFragmentsSingleWord(): void
+    {
+        // GIVEN a single word
+        $input = 'hello';
+
+        // WHEN we convert to fragments
+        $fragments = DataObjectSearch::str_to_fragments($input);
+
+        // THEN it should return an array containing the word
+        $this->assertIsArray($fragments);
+        $this->assertContains('hello', $fragments);
+    }
+
+    public function testStrToFragmentsTwoWords(): void
+    {
+        // GIVEN two words
+        $input = 'hello world';
+
+        // WHEN we convert to fragments
+        $fragments = DataObjectSearch::str_to_fragments($input);
+
+        // THEN it should return fragments including both individual words
+        $this->assertContains('hello', $fragments);
+        $this->assertContains('world', $fragments);
+    }
 }

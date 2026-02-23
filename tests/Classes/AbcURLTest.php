@@ -116,6 +116,39 @@ class AbcURLTest extends TestCase
         $this->assertSame('/page', $result);
     }
 
+    public function testBuildUrlWithUserAndPass(): void
+    {
+        // GIVEN URL components including credentials
+        $data = [
+            'scheme' => 'https',
+            'user' => 'bob',
+            'pass' => 'secret',
+            'host' => 'example.com',
+            'path' => '/admin',
+        ];
+
+        // WHEN we build the URL
+        $result = AbcURL::buildURL($data);
+
+        // THEN it should include user:pass@ in the authority
+        $this->assertSame('https://bob:secret@example.com/admin', $result);
+    }
+
+    public function testBuildUrlWithPathOnly(): void
+    {
+        // GIVEN URL components with only a path and query
+        $data = [
+            'path' => '/search',
+            'query' => 'q=test',
+        ];
+
+        // WHEN we build the URL
+        $result = AbcURL::buildURL($data);
+
+        // THEN it should return path with query string
+        $this->assertSame('/search?q=test', $result);
+    }
+
     private function assertStringContains(string $needle, string $haystack): void
     {
         $this->assertTrue(

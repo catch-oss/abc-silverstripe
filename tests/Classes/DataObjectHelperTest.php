@@ -88,4 +88,146 @@ class DataObjectHelperTest extends SapphireTest
         $this->assertIsArray($result);
         $this->assertCount(2, $result);
     }
+
+    public function testDOS2JSONReturnsValidJSON(): void
+    {
+        // GIVEN two Page instances written to the database
+        $page1 = Page::create();
+        $page1->Title = 'DOS JSON 1';
+        $page1->write();
+        $page2 = Page::create();
+        $page2->Title = 'DOS JSON 2';
+        $page2->write();
+
+        // WHEN we convert to JSON
+        $json = DataObjectHelper::DOS2JSON([$page1, $page2], 0);
+
+        // THEN it should return valid JSON array with 2 entries
+        $this->assertIsString($json);
+        $decoded = json_decode($json, true);
+        $this->assertNotNull($decoded);
+        $this->assertCount(2, $decoded);
+    }
+
+    public function testTableExistsReturnsTrueForKnownTable(): void
+    {
+        // GIVEN a class name that has a table in the test database
+        // WHEN we check if the table exists
+        $result = DataObjectHelper::tableExists('SiteTree');
+
+        // THEN it should return true
+        $this->assertTrue($result);
+    }
+
+    public function testTableExistsReturnsFalseForNonExistentTable(): void
+    {
+        // GIVEN a class name with no corresponding table
+        // WHEN we check if the table exists
+        $result = DataObjectHelper::tableExists('NonExistentTableXyz123');
+
+        // THEN it should return false
+        $this->assertFalse($result);
+    }
+
+    public function testGetTableForClassCachesResult(): void
+    {
+        // GIVEN we call getTableForClass twice for the same class
+        $table1 = DataObjectHelper::getTableForClass(Page::class);
+
+        // WHEN we call it again
+        $table2 = DataObjectHelper::getTableForClass(Page::class);
+
+        // THEN both calls should return the same result (second from cache)
+        $this->assertSame($table1, $table2);
+    }
+
+    public function testDO2ArrayWithExclude(): void
+    {
+        // GIVEN a Page with a Title written to the database
+        $page = Page::create();
+        $page->Title = 'Exclude Test';
+        $page->write();
+
+        // WHEN we convert to array excluding the Title field
+        $result = DataObjectHelper::DO2Array($page, 0, ['Title']);
+
+        // THEN ID should be present but Title should be excluded
+        $this->assertArrayHasKey('ID', $result);
+        $this->assertArrayNotHasKey('Title', $result);
+    }
+
+    public function testGetSubclassesOfIncludesPage(): void
+    {
+        // GIVEN the SiteTree base class
+        $parent = \SilverStripe\CMS\Model\SiteTree::class;
+
+        // WHEN we get subclasses
+        $subclasses = DataObjectHelper::getSubclassesOf($parent);
+
+        // THEN it should include Page
+        $this->assertContains(Page::class, $subclasses);
+    }
+
+    public function testVersionedTableReturnsTableName(): void
+    {
+        // GIVEN a Page class (which has Versioned extension)
+        // WHEN we get the versioned table
+        $table = DataObjectHelper::versioned_table(Page::class);
+
+        // THEN it should return a non-empty string
+        $this->assertNotEmpty($table);
+        $this->assertIsString($table);
+    }
+
+    public function testGetExtendedClassesReturnsArrayForVersioned(): void
+    {
+        // GIVEN the Versioned extension is applied to SiteTree
+        $extension = \SilverStripe\Versioned\Versioned::class;
+
+        // WHEN we get classes extended by Versioned
+        $classes = DataObjectHelper::getExtendedClasses($extension);
+
+        // THEN it should return an array containing SiteTree
+        $this->assertIsArray($classes);
+        $this->assertNotEmpty($classes);
+    }
+
+    public function testGetExtendedClassesReturnsFalseForUnknownExtension(): void
+    {
+        // GIVEN a non-existent extension class name
+        $extension = 'NonExistentExtension_XYZ_123';
+
+        // WHEN we get classes extended by it
+        $result = DataObjectHelper::getExtendedClasses($extension);
+
+        // THEN it should return false
+        $this->assertFalse($result);
+    }
+
+    public function testGetExtensionTablesForClassReturnsArray(): void
+    {
+        // GIVEN a SiteTree class
+        $className = \SilverStripe\CMS\Model\SiteTree::class;
+
+        // WHEN we get extension tables
+        $tables = DataObjectHelper::getExtensionTablesForClass($className);
+
+        // THEN it should return an array
+        $this->assertIsArray($tables);
+    }
+
+    public function testDO2ArrayContainsTitleField(): void
+    {
+        // GIVEN a Page with a specific Title
+        $page = Page::create();
+        $page->Title = 'Coverage Title Test';
+        $page->write();
+
+        // WHEN we convert to array without exclusions
+        $result = DataObjectHelper::DO2Array($page, 0);
+
+        // THEN it should contain the Title
+        $this->assertArrayHasKey('Title', $result);
+        $this->assertSame('Coverage Title Test', $result['Title']);
+    }
 }

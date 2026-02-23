@@ -32,4 +32,16 @@ class DBBackupTest extends SapphireTest
         $this->assertNotEmpty($title);
         $this->assertIsString($title);
     }
+
+    public function testGetOptionsReturnsArray(): void
+    {
+        // GIVEN the DBBackup task
+        $task = new DBBackup();
+
+        // WHEN we get the options
+        $options = $task->getOptions();
+
+        // THEN it should return an array
+        $this->assertIsArray($options);
+    }
 }

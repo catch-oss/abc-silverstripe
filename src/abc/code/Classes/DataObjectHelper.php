@@ -30,11 +30,12 @@ class DataObjectHelper {
 		$schema = DataObject::getSchema();
 		$table = $schema->tableName($className);
 
+		$stage = Versioned::get_stage() ?? '';
 		$stagedRes = (
 			singleton($className)->hasExtension(Versioned::class) &&
-			strtolower(Versioned::get_stage()) != 'stage'
+			strtolower($stage) != 'stage'
 		)
-			? $table . '_' . ucfirst(strtolower(Versioned::get_stage()))
+			? $table . '_' . ucfirst(strtolower($stage))
 			: $table;
 
 		return $stagedRes;

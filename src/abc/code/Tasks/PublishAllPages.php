@@ -4,6 +4,7 @@ namespace Azt3k\SS\Tasks;
 
 use Page;
 use SilverStripe\PolyExecution\PolyCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
 class PublishAllPages extends PolyCommand
@@ -28,6 +29,6 @@ class PublishAllPages extends PolyCommand
 
         $output->writeln('finished');
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }

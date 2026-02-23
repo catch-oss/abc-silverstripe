@@ -102,4 +102,73 @@ class AbcGridFieldConfigTest extends SapphireTest
         // THEN it should return the same config for chaining
         $this->assertSame($config, $result);
     }
+
+    public function testAddComponentWithInsertBefore(): void
+    {
+        // GIVEN a config with a paginator
+        $config = new AbcGridFieldConfig();
+        $config->addComponent(new GridFieldPaginator());
+
+        // WHEN we insert a sortable header before the paginator
+        $config->addComponent(new GridFieldSortableHeader(), GridFieldPaginator::class);
+
+        // THEN the sortable header should come before the paginator
+        $components = $config->getComponents()->toArray();
+        $sortIndex = null;
+        $pagIndex = null;
+        foreach ($components as $i => $c) {
+            if ($c instanceof GridFieldSortableHeader) {
+                $sortIndex = $i;
+            }
+            if ($c instanceof GridFieldPaginator) {
+                $pagIndex = $i;
+            }
+        }
+        $this->assertNotNull($sortIndex);
+        $this->assertNotNull($pagIndex);
+        $this->assertLessThan($pagIndex, $sortIndex);
+    }
+
+    public function testAddComponentsAddsMultiple(): void
+    {
+        // GIVEN a fresh config
+        $config = new AbcGridFieldConfig();
+
+        // WHEN we add multiple components at once
+        $config->addComponents(new GridFieldSortableHeader(), new GridFieldPaginator());
+
+        // THEN both should be present
+        $this->assertSame(2, $config->getComponents()->count());
+        $this->assertNotNull($config->getComponentByType(GridFieldSortableHeader::class));
+        $this->assertNotNull($config->getComponentByType(GridFieldPaginator::class));
+    }
+
+    public function testGetComponentsByTypeReturnsMatchingOnly(): void
+    {
+        // GIVEN a config with mixed component types
+        $config = new AbcGridFieldConfig();
+        $config->addComponent(new GridFieldSortableHeader());
+        $config->addComponent(new GridFieldPaginator());
+        $config->addComponent(new GridFieldSortableHeader());
+
+        // WHEN we get components by sortable header type
+        $result = $config->getComponentsByType(GridFieldSortableHeader::class);
+
+        // THEN only sortable headers should be returned
+        $this->assertSame(2, $result->count());
+    }
+
+    public function testRemoveComponentReturnsSelf(): void
+    {
+        // GIVEN a config with a component
+        $config = new AbcGridFieldConfig();
+        $component = new GridFieldSortableHeader();
+        $config->addComponent($component);
+
+        // WHEN we remove the component
+        $result = $config->removeComponent($component);
+
+        // THEN it should return the same config for chaining
+        $this->assertSame($config, $result);
+    }
 }
