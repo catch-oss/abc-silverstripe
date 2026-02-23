@@ -36,15 +36,7 @@ class DBBackup extends PolyCommand
             mkdir($backupFolder, 0755, true);
         }
 
-        $passArg = $dbPass !== '' ? '-p' . escapeshellarg($dbPass) : '';
-        $cmd = sprintf(
-            'mysqldump --opt -h %s -u %s %s %s > %s',
-            escapeshellarg($dbHost),
-            escapeshellarg($dbUser),
-            $passArg,
-            escapeshellarg($dbName),
-            escapeshellarg($dumpFile)
-        );
+        $cmd = static::buildDumpCommand($dbHost, $dbUser, $dbPass, $dbName, $dumpFile);
 
         exec($cmd, $cmdOutput, $returnCode);
 
@@ -56,5 +48,22 @@ class DBBackup extends PolyCommand
         $output->writeln('Created: ' . $dumpFile);
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Build the mysqldump command string.
+     */
+    public static function buildDumpCommand(string $host, string $user, string $pass, string $dbName, string $dumpFile): string
+    {
+        $passArg = $pass !== '' ? '-p' . escapeshellarg($pass) : '';
+
+        return sprintf(
+            'mysqldump --opt -h %s -u %s %s %s > %s',
+            escapeshellarg($host),
+            escapeshellarg($user),
+            $passArg,
+            escapeshellarg($dbName),
+            escapeshellarg($dumpFile)
+        );
     }
 }

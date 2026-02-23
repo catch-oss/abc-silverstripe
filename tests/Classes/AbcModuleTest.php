@@ -16,4 +16,14 @@ class AbcModuleTest extends TestCase
         $this->expectExceptionMessage('no longer supported');
         AbcModule::load('jquery');
     }
+
+    public function testCombineIsNoOp(): void
+    {
+        // GIVEN the deprecated AbcModule class
+        // WHEN we call combine()
+        AbcModule::combine();
+
+        // THEN it should do nothing (no-op stub for backwards compatibility)
+        $this->assertTrue(true);
+    }
 }

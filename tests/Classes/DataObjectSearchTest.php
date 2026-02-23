@@ -3,11 +3,12 @@
 namespace Azt3k\SS\Tests\Classes;
 
 use Azt3k\SS\Classes\DataObjectSearch;
+use Page;
 use SilverStripe\Dev\SapphireTest;
 
 class DataObjectSearchTest extends SapphireTest
 {
-    protected $usesDatabase = false;
+    protected $usesDatabase = true;
 
     public function testStrToTermsFiltersBlacklistedWords(): void
     {
@@ -146,5 +147,71 @@ class DataObjectSearchTest extends SapphireTest
         // THEN it should return fragments including both individual words
         $this->assertContains('hello', $fragments);
         $this->assertContains('world', $fragments);
+    }
+
+    public function testSearchListReturnsDataList(): void
+    {
+        // GIVEN pages with known titles in the database
+        $page1 = Page::create();
+        $page1->Title = 'Silverstripe Migration Guide';
+        $page1->write();
+        $page2 = Page::create();
+        $page2->Title = 'Unrelated Content Page';
+        $page2->write();
+
+        // WHEN we search for "Migration" in the Title field
+        $result = DataObjectSearch::search_list(Page::class, 'Migration', ['Title']);
+
+        // THEN it should return a DataList containing the matching page
+        $this->assertGreaterThanOrEqual(1, $result->count());
+        $titles = $result->column('Title');
+        $this->assertContains('Silverstripe Migration Guide', $titles);
+    }
+
+    public function testSearchListSearchesMultipleFields(): void
+    {
+        // GIVEN a page with a known title and content
+        $page = Page::create();
+        $page->Title = 'Alpha Page';
+        $page->Content = 'This page contains Zebra keyword';
+        $page->write();
+
+        // WHEN we search for "Zebra" across Title and Content fields
+        $result = DataObjectSearch::search_list(Page::class, 'Zebra', ['Title', 'Content']);
+
+        // THEN it should find the page via Content match
+        $this->assertGreaterThanOrEqual(1, $result->count());
+        $titles = $result->column('Title');
+        $this->assertContains('Alpha Page', $titles);
+    }
+
+    public function testSearchListReturnsEmptyForNoMatch(): void
+    {
+        // GIVEN a page that doesn't match the search
+        $page = Page::create();
+        $page->Title = 'Completely Normal Page';
+        $page->write();
+
+        // WHEN we search for a term that won't match
+        $result = DataObjectSearch::search_list(Page::class, 'xyznonexistent99', ['Title']);
+
+        // THEN it should return an empty list
+        $this->assertSame(0, $result->count());
+    }
+
+    public function testSearchListIncludesFragmentMatches(): void
+    {
+        // GIVEN a page with a multi-word title
+        $page = Page::create();
+        $page->Title = 'Advanced Search Functionality Demo';
+        $page->write();
+
+        // WHEN we search with a partial phrase that generates fragments
+        $result = DataObjectSearch::search_list(Page::class, 'Search Functionality', ['Title']);
+
+        // THEN it should match via the fragment
+        $this->assertGreaterThanOrEqual(1, $result->count());
+        $titles = $result->column('Title');
+        $this->assertContains('Advanced Search Functionality Demo', $titles);
     }
 }

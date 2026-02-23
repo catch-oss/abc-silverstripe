@@ -2,6 +2,7 @@
 
 namespace Azt3k\SS\Tests\Extensions;
 
+use Azt3k\SS\Classes\RequirementsHelper;
 use Azt3k\SS\Extensions\AbcControllerExtension;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
@@ -111,6 +112,31 @@ class AbcControllerExtensionTest extends SapphireTest
 
             // THEN it should append ?m=<mtime> to the path
             $this->assertSame($relativePath . '?m=' . $expectedMtime, $result);
+        } finally {
+            $controller->popCurrent();
+        }
+    }
+
+    public function testOnAfterInitCallsProcessRequirements(): void
+    {
+        // GIVEN a controller with the AbcControllerExtension and a blocked requirement
+        RequirementsHelper::require_block('test/blocked-file.js');
+        $controller = Controller::create();
+        $request = new HTTPRequest('GET', '/');
+        $request->setSession(new Session([]));
+        $controller->setRequest($request);
+        $controller->pushCurrent();
+
+        try {
+            // WHEN onAfterInit fires (which calls process_requirements)
+            $ext = new AbcControllerExtension();
+            $ext->setOwner($controller);
+            $ext->onAfterInit();
+
+            // THEN the blocked requirement should have been processed
+            $backend = \SilverStripe\View\Requirements::backend();
+            $blocked = $backend->getBlocked();
+            $this->assertContains('test/blocked-file.js', $blocked);
         } finally {
             $controller->popCurrent();
         }
