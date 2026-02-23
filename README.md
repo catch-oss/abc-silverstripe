@@ -36,20 +36,31 @@ headers in the security ping.
 
 ### Basic Utility Classes
 
-- Zero config PDO based DB abstraction layer for when the ORM doesn't do what
-  you need it to
-- DataObjectHelper for extracting metadata from the ORM
-- String and URL manipulation classes
+- `AbcDB` - Zero config PDO based DB abstraction layer for when the ORM doesn't
+  do what you need it to
+- `MySQLDump` - Pure-PHP MySQL dump generator with programmatic control over
+  which tables to dump (uses PDO)
+- `DataObjectHelper` - Extracting metadata from the ORM, DataObject to
+  Array/JSON conversion
+- `AbcStr` / `AbcURL` - String and URL manipulation classes
+
+### CLI Commands
+
+- `abc:publish-all-pages` - Publish all pages recursively
+- `abc:db-backup` - Database backup via mysqldump
 
 ### Extensions
 
 - Image
 - File
+- SiteTree
+- Controller
 
 ### Form Fields
 
 - SyntaxHighlightedField - extends a basic text area with syntax highlighting
 - ColourPickerField
+- AbcForm - base form class with subclass discovery via `getSubForms()`
 
 ## License
 

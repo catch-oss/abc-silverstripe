@@ -23,10 +23,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - MIGRATION-PLAN.md documenting all changes
 - phpunit.xml.dist with SS framework bootstrap
-- 15 test files covering utilities, extensions, forms, grid fields, and tasks
+- 16 test files covering utilities, extensions, forms, grid fields, and tasks
 
-### Removed
-- `AbcModule::load()` deprecated (relied on `THIRDPARTY_DIR` removed in SS6)
+### Deprecated
+- `AbcModule::load()` — throws `RuntimeException`. The bundled jQuery 1.x / jQuery Mobile / Bootstrap / Nivo Slider scripts it loaded are obsolete. Use the Silverstripe `Requirements` API directly to load your own front-end dependencies.
 
 ### Fixed
 - PHP 8.5 compatibility: implicit nullable params, return type declarations, typed properties
