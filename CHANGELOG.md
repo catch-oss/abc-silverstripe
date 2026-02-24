@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Breaking
+- Extensions are no longer auto-applied to framework classes. Projects must opt in by adding the desired extensions to their own YAML config. See README.md for setup instructions.
+
 ### Changed
 - Upgraded to Silverstripe 6 compatibility
 - Updated PHP requirement to ^8.5
