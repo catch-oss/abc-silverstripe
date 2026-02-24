@@ -1,12 +1,12 @@
 <?php
 namespace Azt3k\SS\Extensions;
 use SilverStripe\Control\Director;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * @author AzT3K
  */
-class AbcSiteTreeExtension extends DataExtension {
+class AbcSiteTreeExtension extends Extension {
 
     private static $indexes = array(
         'Title' => true,
@@ -16,12 +16,12 @@ class AbcSiteTreeExtension extends DataExtension {
         )
     );
 
-    public function HashedPath($file, $extension = null) {
+    public function HashedPath(string $file, ?string $extension = null): string {
         $absPath = Director::getAbsFile(trim($file  . ($extension ? '.' . $extension : ''), '/'));
         return $file . '?h=' . sha1_file($absPath);
     }
 
-    public function TimestampedPath($file, $extension = null) {
+    public function TimestampedPath(string $file, ?string $extension = null): string {
         $absPath = Director::getAbsFile(trim($file . ($extension ? '.' . $extension : ''), '/'));
         return $file . '?m=' . filemtime($absPath);
     }

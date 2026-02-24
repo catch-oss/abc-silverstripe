@@ -1,110 +1,140 @@
 <?php
+
 namespace Azt3k\SS\Classes;
-/*
-* Database MySQLDump Class File
-* Copyright (c) 2009 by James Elliott
-* James.d.Elliott@gmail.com
-* GNU General Public License v3 http://www.gnu.org/licenses/gpl.html
-*/
-$version1 = '1.3.2'; //This Scripts Version.
 
-class MySQLDump {
+use PDO;
 
-	public $tables = array();
-	public $connected = false;
-	public $output;
-	public $droptableifexists = false;
-	public $mysql_error;
+/**
+ * Pure-PHP MySQL dump generator.
+ *
+ * Provides programmatic control over which tables to dump and returns
+ * the SQL output as a string. Uses PDO (via AbcDB) instead of the
+ * removed mysql_* extension.
+ */
+class MySQLDump
+{
+    /** @var list<string> */
+    public array $tables = [];
 
-	public function connect($host,$user,$pass,$db) {
-		$return = true;
-		$conn = @mysql_connect($host,$user,$pass);
-		if (!$conn) { $this->mysql_error = mysql_error(); $return = false; }
-		$seldb = @mysql_select_db($db);
-		if (!$conn) { $this->mysql_error = mysql_error();  $return = false; }
-		$this->connected = $return;
-		return $return;
-	}
+    public bool $connected = false;
 
-	public function list_tables() {
-		$return = true;
-		if (!$this->connected) { $return = false; }
-		$this->tables = array();
-		$sql = mysql_query("SHOW TABLES");
-		while ($row = mysql_fetch_array($sql)) {
-			array_push($this->tables,$row[0]);
-		}
-		return $return;
-	}
+    public string $output = '';
 
-	public function list_values($tablename) {
+    public bool $dropTableIfExists = false;
 
-		$sql = mysql_query("SELECT * FROM $tablename");
-		$this->output .= "\n\n-- Dumping data for table: $tablename\n\n";
+    public string $lastError = '';
 
-		if ($sql){
-			while ($row = mysql_fetch_array($sql)) {
-				$broj_polja = count($row) / 2;
-				$this->output .= "INSERT INTO `$tablename` VALUES(";
-				$buffer = '';
-				for ($i=0;$i < $broj_polja;$i++) {
-					$vrednost = $row[$i];
-					if (!is_integer($vrednost)) { $vrednost = "'".addslashes($vrednost)."'"; }
-					$buffer .= $vrednost.', ';
-				}
-				$buffer = substr($buffer,0,count($buffer)-3);
-				$this->output .= $buffer . ");\n";
-			}
-		}else{
-			$this->output .= "\n\n-- Unable to get data for for table: $tablename\n\n";
-		}
-	}
+    protected ?PDO $pdo = null;
 
-	public function dump_table($tablename) {
-		$this->output = "";
-		$this->get_table_structure($tablename);
-		$this->list_values($tablename);
-	}
+    public function connect(
+        ?string $host = null,
+        ?string $user = null,
+        ?string $pass = null,
+        ?string $db = null
+    ): bool {
+        try {
+            if ($host !== null && $db !== null) {
+                $dsn = 'mysql:host=' . $host . ';dbname=' . $db . ';charset=utf8mb4';
+                $this->pdo = new PDO($dsn, $user ?? 'root', $pass ?? '', [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                ]);
+            } else {
+                $this->pdo = AbcDB::getInstance();
+            }
+            $this->connected = true;
+            return true;
+        } catch (\PDOException $e) {
+            $this->lastError = $e->getMessage();
+            $this->connected = false;
+            return false;
+        }
+    }
 
-	public function get_table_structure($tablename) {
+    public function listTables(): bool
+    {
+        if (!$this->connected || !$this->pdo) {
+            return false;
+        }
 
-		$this->output .= "\n\n-- Dumping structure for table: $tablename\n\n";
+        $this->tables = [];
+        $stmt = $this->pdo->query('SHOW TABLES');
 
-		if ($this->droptableifexists) {
-			$this->output .= "DROP TABLE IF EXISTS `$tablename`;\nCREATE TABLE `$tablename` (\n";
-		} else {
-			$this->output .= "CREATE TABLE `$tablename` (\n";
-		}
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $this->tables[] = $row[0];
+        }
 
-		$sql = mysql_query("DESCRIBE `$tablename`");
-		$this->fields = array();
+        return true;
+    }
 
-		if ($sql){
-			while ($row = mysql_fetch_array($sql)) {
-				// Field Name
-				$name = $row[0];
-				// Field Type
-				$type = $row[1];
-				// Null
-				$null = $row[2];
-				if ( empty($null) || $null == 'NO' ) $null = "NOT NULL";
-				if ( $null == 'YES' ) $null = "NULL";
-				// Key
-				$key = $row[3];
-				if ($key == "PRI") { $primary = $name; }
-				// Default
-				$default = $row[4];
-				//extra
-				$extra = $row[5];
-				if ($extra !== "") { $extra .= ' '; }
-				// Output
-				$this->output .= "  `$name` $type $null $extra,\n";
-			}
-			$this->output .= "  PRIMARY KEY  (`$primary`)\n);\n";
-		}else{
-			$this->output .= "\n\n-- Unable to get structure for for table: $tablename \n\n";
-		}
+    public function getTableStructure(string $tableName): void
+    {
+        $this->output .= "\n\n-- Dumping structure for table: {$tableName}\n\n";
 
-	}
+        if ($this->dropTableIfExists) {
+            $this->output .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
+        }
 
+        // Use SHOW CREATE TABLE for a faithful DDL reproduction
+        $stmt = $this->pdo->query(
+            'SHOW CREATE TABLE ' . $this->quoteIdentifier($tableName)
+        );
+        $row = $stmt->fetch(PDO::FETCH_NUM);
+
+        if ($row) {
+            $this->output .= $row[1] . ";\n";
+        } else {
+            $this->output .= "-- Unable to get structure for table: {$tableName}\n";
+        }
+    }
+
+    public function listValues(string $tableName): void
+    {
+        $quoted = $this->quoteIdentifier($tableName);
+        $stmt = $this->pdo->query("SELECT * FROM {$quoted}");
+
+        if (!$stmt) {
+            $this->output .= "\n\n-- Unable to get data for table: {$tableName}\n\n";
+            return;
+        }
+
+        $this->output .= "\n\n-- Dumping data for table: {$tableName}\n\n";
+        $columnCount = $stmt->columnCount();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $values = [];
+            for ($i = 0; $i < $columnCount; $i++) {
+                if ($row[$i] === null) {
+                    $values[] = 'NULL';
+                } elseif (is_numeric($row[$i]) && !str_contains((string) $row[$i], 'e')) {
+                    $values[] = $row[$i];
+                } else {
+                    $values[] = $this->pdo->quote($row[$i]);
+                }
+            }
+            $this->output .= "INSERT INTO `{$tableName}` VALUES(" . implode(', ', $values) . ");\n";
+        }
+    }
+
+    public function dumpTable(string $tableName): void
+    {
+        $this->output = '';
+        $this->getTableStructure($tableName);
+        $this->listValues($tableName);
+    }
+
+    public function dumpAll(): void
+    {
+        $this->output = '';
+        $this->listTables();
+
+        foreach ($this->tables as $table) {
+            $this->getTableStructure($table);
+            $this->listValues($table);
+        }
+    }
+
+    protected function quoteIdentifier(string $identifier): string
+    {
+        return '`' . str_replace('`', '``', $identifier) . '`';
+    }
 }

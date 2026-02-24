@@ -2,89 +2,68 @@
 
 namespace Azt3k\SS\Tasks;
 
-use SilverStripe\Control\Director;
-use SilverStripe\Dev\BuildTask;
-use Azt3k\SS\Classes\MySQLDump;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Core\Kernel;
+use SilverStripe\Core\Environment;
+use SilverStripe\PolyExecution\PolyCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 
-// 0 * * * * php /var/www/vhosts/rowingnz/rowing/project/sapphire/cli-script.php dev/tasks/DBBackup > /var/www/vhosts/rowingnz/rowing/project/logs/DBBuild.log
-
-class DBBackup extends BuildTask
+class DBBackup extends PolyCommand
 {
+    protected static string $commandName = 'abc:db-backup';
+    protected static string $description = 'Creates a MySQL database dump';
 
-	protected $title		= ' Backup';
-	protected $description 	= 'Creates a data dump';
-	protected $enabled 		= true;
+    public function getTitle(): string
+    {
+        return 'DB Backup';
+    }
 
-	/**
-	 * Run the task, and do the business
-	 *
-	 * @param SS_HTTPRequest $httpRequest
-	 */
-	function run($httpRequest)
-	{
+    public function run(InputInterface $input, \SilverStripe\PolyExecution\PolyOutput $output): int
+    {
+        $dbHost = Environment::getEnv('SS_DATABASE_SERVER') ?: 'localhost';
+        $dbUser = Environment::getEnv('SS_DATABASE_USERNAME') ?: 'root';
+        $dbPass = Environment::getEnv('SS_DATABASE_PASSWORD') ?: '';
+        $dbName = Environment::getEnv('SS_DATABASE_NAME');
 
-		global $databaseConfig;
+        if (!$dbName) {
+            $output->writeln('Error: SS_DATABASE_NAME environment variable is not set');
+            return Command::FAILURE;
+        }
 
-		// environment type
-		/** @var Kernel $kernel */
-		$kernel = Injector::inst()->get(Kernel::class);
-		return $kernel->setEnvironment('dev');
+        $backupFolder = dirname(__DIR__, 3) . '/db_backups';
+        $dumpFile = $backupFolder . '/' . $dbName . '_' . date('Y-m-d_H-i-s') . '.sql';
 
-		// debug
-		ini_set("display_errors", "2");
-		ERROR_REPORTING(E_ALL);
+        if (!is_dir($backupFolder)) {
+            mkdir($backupFolder, 0755, true);
+        }
 
-		/*
-		$dbhost 		= $databaseConfig['server'];
-		$dbuser 		= $databaseConfig['username'];
-		$dbpwd   		= $databaseConfig['password'];
-		$dbname  		= $databaseConfig['database'];
-		$backupfolder 	= $_SERVER['DOCUMENT_ROOT'].'/db_backups';
-		$dumpfile	 	= $backupfolder."/".$dbname."_".date("Y-m-d_H-i-s").".sql";
+        $cmd = static::buildDumpCommand($dbHost, $dbUser, $dbPass, $dbName, $dumpFile);
 
-		if (!is_dir($backupfolder)) mkdir($backupfolder);
+        exec($cmd, $cmdOutput, $returnCode);
 
-		passthru("/usr/bin/mysqldump --opt --host=$dbhost --user=$dbuser --password=$dbpwd $dbname > $dumpfile");
+        if ($returnCode !== 0) {
+            $output->writeln('Error: mysqldump failed with exit code ' . $returnCode);
+            return Command::FAILURE;
+        }
 
-		echo "Created: ".$dumpfile; passthru("tail -1 $dumpfile");
-		*/
+        $output->writeln('Created: ' . $dumpFile);
 
-		$drop_table_if_exists 	= false; //Add MySQL 'DROP TABLE IF EXISTS' Statement To Output
-		$dbhost 				= $databaseConfig['server'];
-		$dbuser 				= $databaseConfig['username'];
-		$dbpass   				= $databaseConfig['password'];
-		$dbname  				= $databaseConfig['database'];
-		$backupfolder 			= __DIR__ . '/../../db_backups';
-		$dumpfile	 			= $backupfolder . "/" . $dbname . "_" . date("Y-m-d_H-i-s") . ".sql";
+        return Command::SUCCESS;
+    }
 
+    /**
+     * Build the mysqldump command string.
+     */
+    public static function buildDumpCommand(string $host, string $user, string $pass, string $dbName, string $dumpFile): string
+    {
+        $passArg = $pass !== '' ? '-p' . escapeshellarg($pass) : '';
 
-		$backup = new MySQLDump();
-		$backup->droptableifexists = $drop_table_if_exists;
-		$backup->connect($dbhost, $dbuser, $dbpass, $dbname); //Connect To Database
-
-		if (!$backup->connected) {
-			die('Error: ' . $backup->mysql_error);
-		} //On Failed Connection, Show Error.
-
-		$backup->list_tables(); //List Database Tables.
-		$broj = count($backup->tables); //Count Database Tables.
-		$output = '';
-
-		echo "found " . $broj . " tables \n\n";
-
-		for ($i = 0; $i < $broj; $i++) {
-
-			$table_name = $backup->tables[$i]; //Get Table Names.
-			$backup->dump_table($table_name); //Dump Data to the Output Buffer.
-			$output .= $backup->output;
-		}
-
-		if (!is_dir($backupfolder)) mkdir($backupfolder);
-		file_put_contents($dumpfile, $output);
-		echo "Dumped into " . $dumpfile;
-		//echo "<pre>".$output."</pre>";
-
-	}
+        return sprintf(
+            'mysqldump --opt -h %s -u %s %s %s > %s',
+            escapeshellarg($host),
+            escapeshellarg($user),
+            $passArg,
+            escapeshellarg($dbName),
+            escapeshellarg($dumpFile)
+        );
+    }
 }

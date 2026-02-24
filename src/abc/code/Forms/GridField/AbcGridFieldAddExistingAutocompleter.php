@@ -2,11 +2,13 @@
 namespace Azt3k\SS\GridField;
 
 use LogicException;
-use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
-use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Core\Convert;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddExistingAutocompleter;
 use SilverStripe\ORM\DataList;
-use SilverStripe\View\SSViewer;
+use SilverStripe\View\TemplateEngine;
+use SilverStripe\View\ViewLayerData;
 class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompleter {
 
 	/**
@@ -36,8 +38,11 @@ class AbcGridFieldAddExistingAutocompleter extends GridFieldAddExistingAutocompl
 		$results = $results->limit($this->getResultsLimit());
 
 		$json = array();
+		$engine = Injector::inst()->create(TemplateEngine::class);
 		foreach($results as $result) {
-			$json[$result->ID] = SSViewer::fromString($this->resultsFormat)->process($result);
+			$json[$result->ID] = Convert::html2raw(
+				$engine->renderString($this->resultsFormat, ViewLayerData::create($result), cache: false)
+			);
 		}
 		return json_encode($json); 
 	}

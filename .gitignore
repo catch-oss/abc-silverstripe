@@ -1,0 +1,8 @@
+vendor/
+app/
+public/
+.htaccess
+index.php
+web.config
+.phpunit.cache/
+composer.lock

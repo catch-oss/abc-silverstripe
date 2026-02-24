@@ -9,9 +9,9 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class AbcImageExtension extends DataExtension
+class AbcImageExtension extends Extension
 {
 
 	public static $fallback_image = null;

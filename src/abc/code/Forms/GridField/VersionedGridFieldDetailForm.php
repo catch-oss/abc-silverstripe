@@ -19,7 +19,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\ValidationException;
+use SilverStripe\Core\Validation\ValidationException;
 use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
 
@@ -285,7 +285,7 @@ class VersionedGridFieldDetailForm_ItemRequest extends GridFieldDetailForm_ItemR
                 throw new ValidationException(_t('GridFieldDetailForm.DeletePermissionsFailure', 'No delete permissions'), 0);
             }
         } catch (ValidationException $e) {
-            $form->sessionMessage(implode(', ', $e->getResult()->getMessages()), 'bad');
+            $form->sessionMessage($e->getMessage(), 'bad');
 
             return Controller::curr()->redirectBack();
         }

@@ -1,12 +1,12 @@
 <?php
 namespace Azt3k\SS\Extensions;
 use Azt3k\SS\Classes\LeftAndMainHelper;
-use SilverStripe\Admin\LeftAndMainExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * @author AzT3K
  */
-class AbcLeftAndMainExtension extends LeftAndMainExtension {
+class AbcLeftAndMainExtension extends Extension {
 
     private static $url_segment = 'process-requirements';
 

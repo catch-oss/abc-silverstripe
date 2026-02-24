@@ -15,20 +15,20 @@ use SilverStripe\Core\Extension;
  */
 class VersionedModelAdminUpdateFormExtension extends Extension {
 
-	function onBeforeInit() {
+	public function onBeforeInit(): void {
 		Versioned::set_stage('Stage');
 	}
 
-	function updateEditForm($form) {
+	public function updateEditForm($form): void {
 		$fieldList = $form->Fields();
 
 		foreach($fieldList as $field) {
 			if($field instanceof GridField) {
 				$class = $field->getList()->dataClass();
-				if($class::has_extension("Versioned")) {
+				if($class::has_extension(Versioned::class)) {
 					$config = $field->getConfig();
-					$config->removeComponentsByType('GridFieldDeleteAction')
-						->removeComponentsByType('GridFieldDetailForm')
+					$config->removeComponentsByType(GridFieldDeleteAction::class)
+						->removeComponentsByType(GridFieldDetailForm::class)
 						->addComponents(new VersionedGridFieldDetailForm());
 					$field->setConfig($config);
 				}

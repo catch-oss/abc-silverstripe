@@ -1,9 +1,9 @@
 <?php
 namespace Azt3k\SS\Extensions;
 
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class AbcFileExtension extends DataExtension {
+class AbcFileExtension extends Extension {
 
 	// this doesn't even work
 	private static $allowed_extensions = array(

@@ -12,7 +12,7 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Config\Configurable;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\ORM\DataList;
 
 class DataObjectSearch implements Flushable {
@@ -38,10 +38,10 @@ class DataObjectSearch implements Flushable {
         static::$cache_time = $cache_time;
     }
 
-    public static function get_cache_time() {
-        $cacheTime = (int) static::$cache_time !== null
-            ? static::$cache_time
-            : Config::inst()->get('DataObjectSearch', 'cache_time');
+    public static function get_cache_time(): ?int {
+        return static::$cache_time !== null
+            ? (int) static::$cache_time
+            : (int) Config::inst()->get(static::class, 'cache_time');
     }
 
     protected static function get_blacklisted_words() {

@@ -30,7 +30,7 @@ class ChildListField extends LiteralField {
 	 */
 	protected $content;
 
-	function __construct(Controller $controller, $name, $class = 'Page', $limit = 30) {
+	public function __construct(Controller $controller, string $name, string $class = 'Page', int $limit = 30) {
 
 		Requirements::javascript(ABC_PATH . '/javascript/child-list.js');
 		Requirements::css(ABC_PATH . '/css/child-list.css');

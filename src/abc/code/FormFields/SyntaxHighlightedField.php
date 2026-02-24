@@ -9,7 +9,7 @@ class SyntaxHighlightedField extends TextareaField {
 	 */
 	protected $content;
 
-	function __construct($name, $title = null, $value = null, $type="html") {
+	public function __construct(string $name, ?string $title = null, ?string $value = null, string $type = "html") {
 
 		// Requirements
 		Requirements::javascript(ABC_VENDOR_PATH . '/codemirror/lib/codemirror.js');

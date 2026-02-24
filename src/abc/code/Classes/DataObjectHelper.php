@@ -8,6 +8,7 @@ use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Extension;
+use SilverStripe\Core\Environment;
 use SilverStripe\ORM\DB;
 
 class DataObjectHelper {
@@ -21,8 +22,7 @@ class DataObjectHelper {
 	protected static $dOExtTablePropertyMap	= array();
 
 	protected static function db_dialect() {
-		global $databaseConfig;
-		return $databaseConfig['type'];
+		return Environment::getEnv('SS_DATABASE_CLASS') ?: 'MySQLDatabase';
 	}
 
 	public static function versioned_table($className) {
@@ -30,11 +30,12 @@ class DataObjectHelper {
 		$schema = DataObject::getSchema();
 		$table = $schema->tableName($className);
 
+		$stage = Versioned::get_stage() ?? '';
 		$stagedRes = (
 			singleton($className)->hasExtension(Versioned::class) &&
-			strtolower(Versioned::get_stage()) != 'stage'
+			strtolower($stage) != 'stage'
 		)
-			? $table . '_' . ucfirst(strtolower(Versioned::get_stage()))
+			? $table . '_' . ucfirst(strtolower($stage))
 			: $table;
 
 		return $stagedRes;
@@ -91,28 +92,14 @@ class DataObjectHelper {
 		// If the result is already cached use that
 		if (!empty(self::$dOTableMap[$className])) return self::$dOTableMap[$className] ;
 
-		// Find the Table Mapping
-		$class = new ReflectionClass($className);
-		$lineage = array();
-		$i = 0;
+		// Use the SS6 schema API to resolve the table name
+		$table = DataObject::getSchema()->tableName($className);
 
-		// go through parent classes and look for the one that will have created a db table
-		while ($class = $class->getParentClass()) {
-
-			$currentClass = $class->getName();
-
-			// Cache and return the table mapping
-			if ($currentClass == 'DataObject'){
-				$k = $i-1;
-				$table = $k < 0 ? $className : $lineage[$k] ;
-				self::$dOTableMap[$className] = $table;
-				return $table;
-			}
-
-			$lineage[] = $currentClass;
-			$i++;
-
+		if ($table) {
+			self::$dOTableMap[$className] = $table;
 		}
+
+		return $table;
 
 	}
 
@@ -222,13 +209,11 @@ class DataObjectHelper {
 
 	protected static function getFieldsForObj($obj) {
 
-		$dbFields = array();
-
-		// if custom fields are specified, only select these
-		$dbFields = $obj->inheritedDatabaseFields();
+		// Get all database fields from the schema (SS6 replacement for inheritedDatabaseFields)
+		$dbFields = DataObject::getSchema()->fieldSpecs(get_class($obj));
 
 		// add default required fields
-		$dbFields = array_merge($dbFields, array('ID'=>'Int'));
+		$dbFields = array_merge($dbFields, array('ID' => 'Int'));
 
 		return $dbFields;
 	}
@@ -269,7 +254,7 @@ class DataObjectHelper {
 					$tmp = $do->$incl;
 				}
 			}
-			if( $tmp && is_object($tmp) && is_a($tmp, 'DataObjectSet') ){
+			if( $tmp && is_object($tmp) && ($tmp instanceof \SilverStripe\ORM\SS_List) ){
 				if($depth > $currentDepth){
 					$r = array();
 					foreach($tmp as $item){
