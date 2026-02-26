@@ -11,6 +11,10 @@ class AbcSiteTreeExtensionTest extends SapphireTest
 {
     protected $usesDatabase = true;
 
+    protected static $required_extensions = [
+        SiteTree::class => [AbcSiteTreeExtension::class],
+    ];
+
     private ?string $tempFile = null;
 
     protected function tearDown(): void
@@ -23,7 +27,7 @@ class AbcSiteTreeExtensionTest extends SapphireTest
 
     public function testExtensionIsApplied(): void
     {
-        // GIVEN the AbcSiteTreeExtension is configured in YAML
+        // GIVEN the AbcSiteTreeExtension is applied via $required_extensions
         // WHEN we check if SiteTree has the extension
         $hasExtension = SiteTree::has_extension(AbcSiteTreeExtension::class);
 

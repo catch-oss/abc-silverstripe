@@ -10,9 +10,13 @@ class AbcImageExtensionTest extends SapphireTest
 {
     protected $usesDatabase = false;
 
+    protected static $required_extensions = [
+        Image::class => [AbcImageExtension::class],
+    ];
+
     public function testExtensionIsApplied(): void
     {
-        // GIVEN the AbcImageExtension is configured in YAML
+        // GIVEN the AbcImageExtension is applied via $required_extensions
         // WHEN we check if Image has the extension
         $hasExtension = Image::has_extension(AbcImageExtension::class);
 

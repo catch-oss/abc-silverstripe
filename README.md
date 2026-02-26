@@ -51,10 +51,87 @@ headers in the security ping.
 
 ### Extensions
 
-- Image
-- File
-- SiteTree
-- Controller
+Extensions are **not auto-applied**. Add the ones you need to your project's YAML config (e.g. `app/_config/extensions.yml`):
+
+#### AbcControllerExtension
+
+Processes front-end requirements and adds cache-busting helpers (`HashedPath`, `TimestampedPath`) to all controllers.
+
+```yaml
+SilverStripe\Control\Controller:
+  extensions:
+    abc_controller: Azt3k\SS\Extensions\AbcControllerExtension
+```
+
+#### AbcSiteTreeExtension
+
+Adds `HashedPath`/`TimestampedPath` cache-busting helpers and fulltext search indexes to SiteTree.
+
+```yaml
+SilverStripe\CMS\Model\SiteTree:
+  extensions:
+    abc_site_tree: Azt3k\SS\Extensions\AbcSiteTreeExtension
+```
+
+#### AbcImageExtension
+
+Adds `CapturedBy`, `Location`, `DateCaptured` fields and absolute URL helpers to images.
+
+```yaml
+SilverStripe\Assets\Image:
+  extensions:
+    abc_image: Azt3k\SS\Extensions\AbcImageExtension
+```
+
+#### AbcFileExtension
+
+Adds `getMimeType()` and `getFileSize()` helpers to files.
+
+```yaml
+SilverStripe\Assets\File:
+  extensions:
+    abc_file: Azt3k\SS\Extensions\AbcFileExtension
+```
+
+#### AbcLeftAndMainExtension
+
+Processes CMS requirements on init.
+
+```yaml
+SilverStripe\Admin\LeftAndMain:
+  extensions:
+    abc_left_and_main: Azt3k\SS\Extensions\AbcLeftAndMainExtension
+```
+
+#### AbcSecurityExtension
+
+Processes requirements on the security ping action.
+
+```yaml
+SilverStripe\Security\Security:
+  extensions:
+    abc_security: Azt3k\SS\Extensions\AbcSecurityExtension
+```
+
+#### VersionedModelAdminUpdateFormExtension
+
+Replaces `GridFieldDetailForm` with a versioned variant in ModelAdmin.
+
+```yaml
+SilverStripe\Admin\ModelAdmin:
+  extensions:
+    abc_versioned_model_admin: Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
+```
+
+#### HTMLTextExtension
+
+Adds `FirstBlock()` and `FirstBlocks()` template helpers to `DBHTMLText`.
+
+```yaml
+SilverStripe\ORM\FieldType\DBHTMLText:
+  extensions:
+    abc_html_text: Azt3k\SS\Extensions\HTMLTextExtension
+```
 
 ### Form Fields
 

@@ -13,6 +13,10 @@ class AbcControllerExtensionTest extends SapphireTest
 {
     protected $usesDatabase = false;
 
+    protected static $required_extensions = [
+        Controller::class => [AbcControllerExtension::class],
+    ];
+
     private ?string $tempFile = null;
 
     protected function tearDown(): void
@@ -39,7 +43,7 @@ class AbcControllerExtensionTest extends SapphireTest
 
     public function testExtensionIsApplied(): void
     {
-        // GIVEN the AbcControllerExtension is configured in YAML
+        // GIVEN the AbcControllerExtension is applied via $required_extensions
         // WHEN we check if Controller has the extension
         $hasExtension = Controller::has_extension(AbcControllerExtension::class);
 

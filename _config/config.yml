@@ -1,25 +1,4 @@
-SilverStripe\Admin\ModelAdmin:
-  extensions:
-    abc_versioned_model_admin: Azt3k\SS\Extensions\VersionedModelAdminUpdateFormExtension
-SilverStripe\Assets\Image:
-  extensions:
-    abc_image: Azt3k\SS\Extensions\AbcImageExtension
-SilverStripe\Assets\File:
-  extensions:
-    abc_file: Azt3k\SS\Extensions\AbcFileExtension
-SilverStripe\Admin\LeftAndMain:
-  url_segment: process-requirements
-  extensions:
-    abc_left_and_main: Azt3k\SS\Extensions\AbcLeftAndMainExtension
-SilverStripe\CMS\Model\SiteTree:
-  extensions:
-    abc_site_tree: Azt3k\SS\Extensions\AbcSiteTreeExtension
-SilverStripe\Security\Security:
-  extensions:
-    abc_security: Azt3k\SS\Extensions\AbcSecurityExtension
-SilverStripe\Control\Controller:
-  extensions:
-    abc_controller: Azt3k\SS\Extensions\AbcControllerExtension
-SilverStripe\ORM\FieldType\DBHTMLText:
-  extensions:
-    abc_html_text: Azt3k\SS\Extensions\HTMLTextExtension
+---
+Name: abc-silverstripe
+---
+# Extensions are no longer auto-applied. See README.md for setup instructions.

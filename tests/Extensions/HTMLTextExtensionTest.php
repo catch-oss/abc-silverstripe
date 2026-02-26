@@ -10,9 +10,13 @@ class HTMLTextExtensionTest extends SapphireTest
 {
     protected $usesDatabase = false;
 
+    protected static $required_extensions = [
+        DBHTMLText::class => [HTMLTextExtension::class],
+    ];
+
     public function testExtensionIsApplied(): void
     {
-        // GIVEN the HTMLTextExtension is configured in YAML
+        // GIVEN the HTMLTextExtension is applied via $required_extensions
         // WHEN we check if DBHTMLText has the extension
         $hasExtension = DBHTMLText::has_extension(HTMLTextExtension::class);
 
