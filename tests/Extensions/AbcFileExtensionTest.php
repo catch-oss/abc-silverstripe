@@ -10,9 +10,13 @@ class AbcFileExtensionTest extends SapphireTest
 {
     protected $usesDatabase = true;
 
+    protected static $required_extensions = [
+        File::class => [AbcFileExtension::class],
+    ];
+
     public function testExtensionIsApplied(): void
     {
-        // GIVEN the AbcFileExtension is configured in YAML
+        // GIVEN the AbcFileExtension is applied via $required_extensions
         // WHEN we check if File has the extension
         $hasExtension = File::has_extension(AbcFileExtension::class);
 
