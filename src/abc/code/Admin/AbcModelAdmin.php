@@ -21,6 +21,8 @@ use SilverStripe\Model\List\ArrayList;
 class AbcModelAdmin extends ModelAdmin
 {
 
+	private static string $url_segment = 'abc-admin';
+
 	/**
 	 * This method generates the list view form
 	 * Individual items are handled by the gridfielddetailform - this is is defined in GridFieldDetailForm_ItemRequest::ItemEditForm() and has been overloaded in the subclass
